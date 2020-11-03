@@ -1,0 +1,47 @@
+.movies__item {
+    width: 454px;
+    height: 281px;
+}
+
+.movies__img {
+    width: 183px;
+    height: 100%;
+}
+
+.movies__details {
+    padding: 12px 20px 49px;
+    max-height: 281px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.movies__div {
+    display: flex;
+}
+
+.movies__name {
+    font-size: 20px;
+    margin-bottom: 7px;
+}
+
+.movies__date {
+    display: block;
+    color: #827E7E;
+    margin-bottom: 9px;
+}
+
+.movies__genre {
+    display: inline-block;
+    padding: 2px 4px;
+    margin-bottom: 10px;
+    background: #FAFAFA;
+    border: 1px solid #D9D9D9;
+    border-radius: 2px;
+    color: rgba(0, 0, 0, 0.65);
+}
+
+.movies__descr {
+    line-height: 22px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
