@@ -1,6 +1,6 @@
 
 
-export default class DataMovies {
+export default class MoviesData {
 
     apiBase = 'https://api.themoviedb.org/3/';
 

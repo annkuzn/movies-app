@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
 
+// eslint-disable-next-line import/no-unresolved
 import './app.css';
 
 import Movie from '../movie/movie';
 
-import DataMovies from '../../services/data';
+import MoviesData from '../../services/movies-data';
 
 export default class App extends Component {
 
-    dataMovies = new DataMovies();
+    dataMovies = new MoviesData();
 
     state = {
         data: []
