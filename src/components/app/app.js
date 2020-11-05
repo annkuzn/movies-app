@@ -22,16 +22,17 @@ export default class App extends Component {
 
     timer = null;
 
-    componentDidUpdate(prevState) {
+    componentDidUpdate(prevProp, prevState) {
         const { request } = this.state;
 
-        if(prevState !== request) {
+        if(prevState.request !== request) {
            this.dataMovies
             .getMovies(request, '1')
             .then(movie => {
                 this.setState({
                     data: movie,
-                    loading: false
+                    loading: false,
+                    error: false
                 })
             })
             .catch((err) => {this.onError(err.message)}); 
@@ -46,24 +47,24 @@ export default class App extends Component {
         })
     }
 
+    updateRequest = (newRequest) => {
+        this.setState({
+            request: newRequest.target.value
+        })
+    }
+
     debounce(fn, debounceTime) {
-            return (arg) => {
-                clearTimeout(this.timer);
-                this.timer = setTimeout(() => {fn(arg)}, debounceTime);
-            };
+        return (arg) => {
+            clearTimeout(this.timer);
+            this.timer = setTimeout(() => {fn(arg)}, debounceTime);
         };
+    };
 
     render (){
 
         const { data, loading, error } = this.state;
 
-        const updateRequest = (newRequest) => {
-            this.setState({
-                request: newRequest.target.value
-            })
-        }
-
-        const updateRequestDebounce = this.debounce(updateRequest, 700);
+        const updateRequestDebounce = this.debounce(this.updateRequest, 700);
 
         const spinner = <div className="spin">
                             <Spin size='large' />
