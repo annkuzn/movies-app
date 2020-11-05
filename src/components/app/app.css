@@ -2,6 +2,7 @@
     display: grid;
     grid-template-columns: 50% 50%;
     gap: 35px;
+    margin-top: 32px;
 }
 
 .spin {
