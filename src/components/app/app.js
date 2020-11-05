@@ -12,7 +12,8 @@ export default class App extends Component {
     dataMovies = new MoviesData();
 
     state = {
-        data: []
+        data: [],
+        loading: true,
     };
 
     constructor() {
@@ -20,12 +21,19 @@ export default class App extends Component {
         this.updateData();
     }
 
+    onError = (message) => {
+        this.setState({
+            loading: false
+        })
+    }
+
     updateData() {
         this.dataMovies
             .getMovies('return', '1')
             .then(movie => {
                 this.setState({
-                    data: movie
+                    data: movie,
+                    loading: false
                 })
             })
     };    
@@ -34,16 +42,21 @@ export default class App extends Component {
     render (){
 
         const { data } = this.state;
+        const spinner = <div className="spin">
+                            <Spin size='large' />
+                        </div>;
+
         const movies = data.map(movie => {
             return (
                 <li className='movies__item'><Movie movie={movie} /></li>
             )
         })
+
+        const list = <ul className='movies__list'>
+                        {movies}
+                     </ul>;
         
-        return (
-            <ul className='movies__list'>
-                {movies}
-            </ul>
-        )
+        const contentWithoutError = loading ? spinner : list;
+        return content;
     }
 }
