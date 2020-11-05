@@ -21,7 +21,6 @@ export default class MoviesData {
         return this.getResource('search/movie', query, page)
         .then(res => {
             const moviesArr = res.results;
-
             if (!moviesArr.length) {
                 throw new Error(`Нет результатов по запросу "${query}"`);
             }

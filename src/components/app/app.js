@@ -14,21 +14,29 @@ export default class App extends Component {
     dataMovies = new MoviesData();
 
     state = {
-        data: null,
+        request: '',
+        data: [],
         loading: true,
         error: false
     };
 
-    componentDidMount() {
-        this.dataMovies
-        .getMovies('return', '1')
-        .then(movie => {
-            this.setState({
-                data: movie,
-                loading: false
+    timer = null;
+
+    componentDidUpdate(prevState) {
+        const { request } = this.state;
+
+        if(prevState !== request) {
+           this.dataMovies
+            .getMovies(request, '1')
+            .then(movie => {
+                this.setState({
+                    data: movie,
+                    loading: false
+                })
             })
-        })
-        .catch((err) => {this.onError(err.message)});
+            .catch((err) => {this.onError(err.message)}); 
+        }
+        
     }
 
     onError = (message) => {
@@ -36,19 +44,30 @@ export default class App extends Component {
             error: message,
             loading: false
         })
-    }  
+    }
+
+    debounce(fn, debounceTime) {
+            return (arg) => {
+                clearTimeout(this.timer);
+                this.timer = setTimeout(() => {fn(arg)}, debounceTime);
+            };
+        };
 
     render (){
 
         const { data, loading, error } = this.state;
 
+        const updateRequest = (newRequest) => {
+            this.setState({
+                request: newRequest.target.value
+            })
+        }
+
+        const updateRequestDebounce = this.debounce(updateRequest, 700);
+
         const spinner = <div className="spin">
                             <Spin size='large' />
                         </div>;
-
-        if (!data) {
-            return spinner;
-        }
 
         const errorComponent =  <Alert
                                     message="Ошибка"
@@ -57,8 +76,6 @@ export default class App extends Component {
                                 />
 
         const errorMessage = error ? errorComponent : null;
-
-        
 
         const movies = data.map(movie => {
             return (
@@ -76,7 +93,7 @@ export default class App extends Component {
 
         return (
             <div>
-                <Input placeholder='Type to search...' />
+                <Input placeholder='Type to search...' onInput={updateRequestDebounce}/>
                 {content}
             </div>
         )
