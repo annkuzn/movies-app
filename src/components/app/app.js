@@ -14,14 +14,21 @@ export default class App extends Component {
     dataMovies = new MoviesData();
 
     state = {
-        data: [],
+        data: null,
         loading: true,
         error: false
     };
 
-    constructor() {
-        super();
-        this.updateData();
+    componentDidMount() {
+        this.dataMovies
+        .getMovies('return', '1')
+        .then(movie => {
+            this.setState({
+                data: movie,
+                loading: false
+            })
+        })
+        .catch((err) => {this.onError(err.message)});
     }
 
     onError = (message) => {
@@ -29,24 +36,19 @@ export default class App extends Component {
             error: message,
             loading: false
         })
-    }
-
-    updateData() {
-        this.dataMovies
-            .getMovies('return', '1')
-            .then(movie => {
-                this.setState({
-                    data: movie,
-                    loading: false
-                })
-            })
-            .catch((err) => {this.onError(err.message)});
-    };    
-
+    }  
 
     render (){
 
         const { data, loading, error } = this.state;
+
+        const spinner = <div className="spin">
+                            <Spin size='large' />
+                        </div>;
+
+        if (!data) {
+            return spinner;
+        }
 
         const errorComponent =  <Alert
                                     message="Ошибка"
@@ -56,9 +58,7 @@ export default class App extends Component {
 
         const errorMessage = error ? errorComponent : null;
 
-        const spinner = <div className="spin">
-                            <Spin size='large' />
-                        </div>;
+        
 
         const movies = data.map(movie => {
             return (
