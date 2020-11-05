@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
+import { Spin, Alert } from 'antd';
 
 // eslint-disable-next-line import/no-unresolved
 import './app.css';
+import 'antd/dist/antd.css';
 
 import Movie from '../movie/movie';
 
@@ -14,6 +16,7 @@ export default class App extends Component {
     state = {
         data: [],
         loading: true,
+        error: false
     };
 
     constructor() {
@@ -23,6 +26,7 @@ export default class App extends Component {
 
     onError = (message) => {
         this.setState({
+            error: message,
             loading: false
         })
     }
@@ -36,12 +40,22 @@ export default class App extends Component {
                     loading: false
                 })
             })
+            .catch((err) => {this.onError(err.message)});
     };    
 
 
     render (){
 
-        const { data } = this.state;
+        const { data, loading, error } = this.state;
+
+        const errorComponent =  <Alert
+                                    message="Ошибка"
+                                    description={error}
+                                    type="error"
+                                />
+
+        const errorMessage = error ? errorComponent : null;
+
         const spinner = <div className="spin">
                             <Spin size='large' />
                         </div>;
@@ -57,6 +71,9 @@ export default class App extends Component {
                      </ul>;
         
         const contentWithoutError = loading ? spinner : list;
+
+        const content = error ? errorMessage : contentWithoutError;
+
         return content;
     }
 }
