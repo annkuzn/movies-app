@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Spin, Alert } from 'antd';
+import { Spin, Alert, Input } from 'antd';
 
 // eslint-disable-next-line import/no-unresolved
 import './app.css';
@@ -74,6 +74,11 @@ export default class App extends Component {
 
         const content = error ? errorMessage : contentWithoutError;
 
-        return content;
+        return (
+            <div>
+                <Input placeholder='Type to search...' />
+                {content}
+            </div>
+        )
     }
 }
