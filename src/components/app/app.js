@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Spin, Alert, Input } from 'antd';
+import { Spin, Alert, Input, Pagination } from 'antd';
+import  debounce  from 'lodash.debounce';
 
 // eslint-disable-next-line import/no-unresolved
 import './app.css';
@@ -16,23 +17,27 @@ export default class App extends Component {
     state = {
         request: '',
         data: [],
+        currentPage: 1,
         loading: true,
-        error: false
+        error: false,
+        pages: 1
     };
 
     timer = null;
 
     componentDidUpdate(prevProp, prevState) {
-        const { request } = this.state;
+        const { request, currentPage} = this.state;
 
-        if(prevState.request !== request) {
+        if(prevState.request !== request || prevState.currentPage !== currentPage) {
            this.dataMovies
-            .getMovies(request, '1')
-            .then(movie => {
+            .getMovies(prevState.request, request, currentPage)
+            .then(([movies, numberOfPages, curPage])=> {
                 this.setState({
-                    data: movie,
+                    data: movies[curPage],
                     loading: false,
-                    error: false
+                    error: false,
+                    currentPage: curPage,
+                    pages: numberOfPages
                 })
             })
             .catch((err) => {this.onError(err.message)}); 
@@ -47,24 +52,23 @@ export default class App extends Component {
         })
     }
 
+    onChange = page => {
+        this.setState({
+            currentPage: page,
+        });
+      };
+
     updateRequest = (newRequest) => {
         this.setState({
             request: newRequest.target.value
         })
     }
 
-    debounce(fn, debounceTime) {
-        return (arg) => {
-            clearTimeout(this.timer);
-            this.timer = setTimeout(() => {fn(arg)}, debounceTime);
-        };
-    };
-
     render (){
 
-        const { data, loading, error } = this.state;
+        const { data, loading, error, currentPage, pages } = this.state;
 
-        const updateRequestDebounce = this.debounce(this.updateRequest, 700);
+        const updateRequestDebounce = debounce(this.updateRequest, 700);
 
         const spinner = <div className="spin">
                             <Spin size='large' />
@@ -87,15 +91,20 @@ export default class App extends Component {
         const list = <ul className='movies__list'>
                         {movies}
                      </ul>;
+
+        const paginationComp = <Pagination current={currentPage} onChange={this.onChange} defaultPageSize={6} total={pages}/>;
         
         const contentWithoutError = loading ? spinner : list;
 
         const content = error ? errorMessage : contentWithoutError;
 
+        const pagination = content === list ? paginationComp : null;
+
         return (
             <div>
-                <Input placeholder='Type to search...' onInput={updateRequestDebounce}/>
+                <Input placeholder='Type to search...' onInput={updateRequestDebounce} autoFocus/>
                 {content}
+                <div className='movies__pagination'>{pagination}</div>
             </div>
         )
     }
