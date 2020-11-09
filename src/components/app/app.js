@@ -9,10 +9,13 @@ import 'antd/dist/antd.css';
 import Movie from '../movie/movie';
 
 import MoviesData from '../../services/movies-data';
+import RequestToken from '../../services/request-token';
 
 export default class App extends Component {
 
     dataMovies = new MoviesData();
+
+    requestToken = new RequestToken();
 
     state = {
         request: '',
@@ -20,10 +23,37 @@ export default class App extends Component {
         currentPage: 1,
         loading: true,
         error: false,
-        pages: 1
+        pages: 1,
+        accauntId: null
     };
 
     timer = null;
+
+    componentDidMount() {
+        if (!localStorage.token) {
+            this.requestToken.getToken()
+            .then(token => {
+                this.requestToken.redirection(token);
+                localStorage.setItem('token', token);
+            })
+        } else if (!localStorage.session_id) {
+            this.requestToken.getSessionId(localStorage.token)
+            .then(id => localStorage.setItem('session_id', id))
+        } else {
+            this.requestToken.getAccauntId(localStorage.session_id)
+            .then(res => {
+                this.setState({
+                    accauntId: res
+                })
+            })
+            .then(() => {
+                const { accauntId } = this.state;
+                console.log(accauntId);
+            })
+        }
+
+        
+    }
 
     componentDidUpdate(prevProp, prevState) {
         const { request, currentPage} = this.state;
@@ -40,7 +70,7 @@ export default class App extends Component {
                     pages: numberOfPages
                 })
             })
-            .catch((err) => {this.onError(err.message)}); 
+            // .catch((err) => {this.onError(err.message)}); 
         }
         
     }
