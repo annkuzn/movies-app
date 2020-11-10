@@ -62,7 +62,7 @@ export default class Movie  extends Component {
                     <span className='movies__date'>{date}</span>
                     <span className='movies__genre'>Action</span>
                     <MovieOverview overview={overview} numberOfTitleLines={numberOfTitleLines} currentPage={currentPage}/>
-                    <Rate />
+                    <Rate count={10}/>
                 </div>
             </div>
         )

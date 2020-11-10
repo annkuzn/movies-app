@@ -9,14 +9,20 @@
 }
 
 .movies__details {
-    padding: 12px 20px 49px;
+    padding: 12px 20px;
     max-height: 281px;
     overflow: hidden;
     text-overflow: ellipsis;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
 }
 
 .movies__div {
     display: flex;
+    height: 281px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .movies__name {

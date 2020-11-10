@@ -35,7 +35,7 @@ export default class MovieOverview extends Component{
         const { numberOfTitleLines } = this.props;
         let result = overview;
         const maxLengthOverview = 300;
-        const numberHiddenSymbols = 75; // number of hidden overviews characters with one titles line
+        const numberHiddenSymbols = 80; // number of hidden overviews characters with one titles line
 
         const length = maxLengthOverview - numberOfTitleLines * numberHiddenSymbols;
 
