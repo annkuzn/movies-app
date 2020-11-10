@@ -41,6 +41,7 @@
 }
 
 .movies__descr {
+    margin-bottom: 0;
     line-height: 22px;
     overflow: hidden;
     text-overflow: ellipsis;

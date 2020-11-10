@@ -50,9 +50,7 @@ export default class App extends Component {
                 const { accauntId } = this.state;
                 console.log(accauntId);
             })
-        }
-
-        
+        }    
     }
 
     componentDidUpdate(prevProp, prevState) {
@@ -70,9 +68,8 @@ export default class App extends Component {
                     pages: numberOfPages
                 })
             })
-            // .catch((err) => {this.onError(err.message)}); 
+            .catch((err) => {this.onError(err.message)}); 
         }
-        
     }
 
     onError = (message) => {
@@ -112,9 +109,11 @@ export default class App extends Component {
 
         const errorMessage = error ? errorComponent : null;
 
-        const movies = data.map(movie => {
+
+        const movies = data.map((movie) => {
+
             return (
-                <li className='movies__item'><Movie movie={movie} /></li>
+                <li className='movies__item'><Movie movie={movie} currentPage={currentPage}/></li>
             )
         })
 
