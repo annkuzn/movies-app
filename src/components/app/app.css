@@ -1,7 +1,8 @@
 .movies__list {
     display: grid;
     grid-template-columns: 50% 50%;
-    gap: 35px;
+    gap: 18px;
+    grid-row-gap: 35px;
     margin-top: 32px;
 }
 
@@ -20,4 +21,25 @@
 
 .ant-pagination {
     display: inline-block;
+}
+
+.ant-tabs-tab {
+    margin: 0;
+    padding: 12px;
+}
+
+.ant-tabs-top > .ant-tabs-nav {
+margin: 0 auto 16px auto;
+}
+
+.ant-tabs-large > .ant-tabs-nav .ant-tabs-tab {
+    padding:  16px;
+}
+
+.ant-tabs-tab-btn {
+    font-size: 16px;
+}
+
+.ant-tabs-tabpane {
+    padding: 13px;
 }

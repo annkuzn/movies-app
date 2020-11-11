@@ -1,21 +1,25 @@
 import React, { Component } from 'react';
-import { Spin, Alert, Input, Pagination } from 'antd';
+import { Spin, Alert, Input, Pagination, Tabs } from 'antd';
 import  debounce  from 'lodash.debounce';
 
 // eslint-disable-next-line import/no-unresolved
-import './app.css';
+
 import 'antd/dist/antd.css';
+import './app.css';
 
 import Movie from '../movie/movie';
 
 import MoviesData from '../../services/movies-data';
 import RequestToken from '../../services/request-token';
+import RateMovie from '../../services/rate-movie';
 
 export default class App extends Component {
 
     dataMovies = new MoviesData();
 
     requestToken = new RequestToken();
+
+    rateMovie = new RateMovie();
 
     state = {
         request: '',
@@ -24,7 +28,7 @@ export default class App extends Component {
         loading: true,
         error: false,
         pages: 1,
-        accauntId: null
+        tab: 1
     };
 
     timer = null;
@@ -39,39 +43,40 @@ export default class App extends Component {
         } else if (!localStorage.session_id) {
             this.requestToken.getSessionId(localStorage.token)
             .then(id => localStorage.setItem('session_id', id))
-        } else {
-            this.requestToken.getAccauntId(localStorage.session_id)
-            .then(res => {
-                this.setState({
-                    accauntId: res
-                })
-            })
-            .then(() => {
-                const { accauntId } = this.state;
-                console.log(accauntId);
-            })
-        }    
+        } 
     }
 
     componentDidUpdate(prevProp, prevState) {
-        const { request, currentPage} = this.state;
+        const { request, currentPage, tab} = this.state;
 
-        if(prevState.request !== request || prevState.currentPage !== currentPage) {
-           this.dataMovies
-            .getMovies(prevState.request, request, currentPage)
-            .then(([movies, numberOfPages, curPage])=> {
-                this.setState({
-                    data: movies[curPage],
-                    loading: false,
-                    error: false,
-                    currentPage: curPage,
-                    pages: numberOfPages
-                })
-            })
-            .catch((err) => {this.onError(err.message)}); 
+        if(prevState.tab !== tab || prevState.request !== request || prevState.currentPage !== currentPage) {
+            console.log(currentPage, 'currentPage')
+            if(tab === 1) {
+                if(request) {
+                    const func = this.dataMovies.getMovies(currentPage, prevState.request, request);
+                this.searchMovies(func);
+                }
+            } else if(tab === 2) {
+                const func = this.rateMovie.getRateMovies(currentPage)
+                this.searchMovies(func);
+            }
         }
     }
 
+    searchMovies = (func) => {
+        
+        func.then(([movies, numberOfPages, curPage])=> {
+            this.setState({
+                data: movies[curPage],
+                loading: false,
+                error: false,
+                currentPage: curPage,
+                pages: numberOfPages
+            })
+        })
+        .catch((err) => {this.onError(err.message)}); 
+    }
+ 
     onError = (message) => {
         this.setState({
             error: message,
@@ -91,9 +96,23 @@ export default class App extends Component {
         })
     }
 
+    updateSearchTab = (tabKey) => {
+        this.setState({
+            tab: +tabKey,
+            currentPage: 1,
+            loading: true,
+        })
+    }
+ 
+    tabClickHandler = (tabKey) => {
+        this.updateSearchTab(tabKey);
+    }
+
     render (){
 
-        const { data, loading, error, currentPage, pages } = this.state;
+        const { data, loading, error, currentPage, pages} = this.state;
+
+        const { TabPane } = Tabs;
 
         const updateRequestDebounce = debounce(this.updateRequest, 700);
 
@@ -129,12 +148,21 @@ export default class App extends Component {
 
         const pagination = content === list ? paginationComp : null;
 
+
         return (
-            <div>
-                <Input placeholder='Type to search...' onInput={updateRequestDebounce} autoFocus/>
-                {content}
-                <div className='movies__pagination'>{pagination}</div>
-            </div>
+            <Tabs defaultActiveKey="1" centered onTabClick={this.tabClickHandler}>
+                <TabPane tab="Search" key="1" >
+                    <Input placeholder='Type to search...' onInput={updateRequestDebounce} autoFocus/>
+                    {content}
+                    <div className='movies__pagination'>{pagination}</div>
+                </TabPane>
+                <TabPane tab="Rated" key="2" >
+                    {content}
+                    <div className='movies__pagination'>{pagination}</div>
+                </TabPane>
+            </Tabs>
+                
+            
         )
     }
 }

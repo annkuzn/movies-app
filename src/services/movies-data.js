@@ -14,7 +14,7 @@ export default class MoviesData {
         return res.json();
     }
     
-    getMovies(prevRequest, query, currentPage) {
+    getMovies(currentPage, prevRequest, query) {
         return this.getResource('search/movie', query)
         .then(res => {
             const moviesArr = res.results;
@@ -48,7 +48,7 @@ export default class MoviesData {
             }, {});
 
             const curPage = prevRequest !== query ? 1 : currentPage;
-
+            
             return [moviesPages, movies.length, curPage];
         })
     }

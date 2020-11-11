@@ -30,6 +30,5 @@ export default class RequestToken {
     getAccauntId(id) {
         return fetch(`${this.movieApi.apiBase}account?api_key=${this.movieApi.apiKey}&session_id=${id}`)
         .then(res => res.json())
-        .then(res => res.id);
     }
 } 
