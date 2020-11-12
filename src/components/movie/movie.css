@@ -8,15 +8,21 @@
     height: 100%;
 }
 
-.movies__details {
+.movies__description {
     padding: 12px 20px;
     max-height: 281px;
-    overflow: hidden;
+    position: relative;
+    width: 271px;
     text-overflow: ellipsis;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     justify-content: space-between;
+}
+
+.movies__details {
+    width: 100%;
+    overflow: hidden;
 }
 
 .movies__div {
@@ -27,7 +33,8 @@
 
 .movies__name {
     font-size: 20px;
-    margin-bottom: 7px;
+    margin-bottom: 0;
+    max-width: 208px;
 }
 
 .movies__date {
@@ -39,11 +46,12 @@
 .movies__genre {
     display: inline-block;
     padding: 2px 4px;
-    margin-bottom: 10px;
+    margin-bottom: 3px;
     background: #FAFAFA;
     border: 1px solid #D9D9D9;
     border-radius: 2px;
     color: rgba(0, 0, 0, 0.65);
+    margin-right: 5px;
 }
 
 .movies__descr {
@@ -51,4 +59,69 @@
     line-height: 22px;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.movies__voteAverage {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    height: 30px;
+    width: 30px;
+    border-radius: 90%;
+    text-align: center;
+    padding-top: 4px;
+}
+
+.movies__voteAverageRed {
+    border: 2px solid #E90000;
+}
+
+.movies__voteAverageOrange {
+    border: 2px solid #E97E00;
+}
+
+.movies__voteAverageYellow {
+    border: 2px solid #E9D100;
+}
+
+.movies__voteAverageGreen {
+    border: 2px solid #66E900;
+}
+
+.movies__genres__list {
+    position: relative;
+    white-space: nowrap;
+    overflow: auto;
+    margin-bottom: 8px;
+}
+
+.movies__genres__list::-webkit-scrollbar{
+    height: 3px;
+}
+
+.movies__genres__list::-webkit-scrollbar-thumb{
+    background-color: rgb(201, 201, 201);
+}
+
+.movies__genres__list::-webkit-scrollbar-thumb:hover{
+
+    background-color: rgb(141, 141, 141);
+}
+
+
+.movies__genres__list::-webkit-scrollbar-track:hover{
+    background-color: #eee;
+}
+
+.movies__genresList__block {
+    position: relative;
+}
+
+.movies__genresList__block::after {
+    content: '';
+    position: absolute;
+    height: 30px;
+    right: 0;
+    top: -2px;
+    box-shadow: 0 0 5px 5px white;
 }

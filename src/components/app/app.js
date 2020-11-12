@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
-import { Spin, Alert, Input, Pagination, Tabs } from 'antd';
-import  debounce  from 'lodash.debounce';
+import { Tabs } from 'antd';
 
 // eslint-disable-next-line import/no-unresolved
 
 import 'antd/dist/antd.css';
 import './app.css';
 
-import Movie from '../movie/movie';
+import Tab from '../tab/tab';
+
+import { Provider } from '../context';
 
 import MoviesData from '../../services/movies-data';
 import RequestToken from '../../services/request-token';
@@ -28,7 +29,8 @@ export default class App extends Component {
         loading: true,
         error: false,
         pages: 1,
-        tab: 1
+        tab: 1,
+        genres: null
     };
 
     timer = null;
@@ -43,14 +45,21 @@ export default class App extends Component {
         } else if (!localStorage.session_id) {
             this.requestToken.getSessionId(localStorage.token)
             .then(id => localStorage.setItem('session_id', id))
-        } 
+        }
+        
+        this.dataMovies.getGenres()
+        .then(res => {
+            this.setState({
+                genres: res.genres
+            })
+        })
     }
 
     componentDidUpdate(prevProp, prevState) {
         const { request, currentPage, tab} = this.state;
-
+        
         if(prevState.tab !== tab || prevState.request !== request || prevState.currentPage !== currentPage) {
-            console.log(currentPage, 'currentPage')
+
             if(tab === 1) {
                 if(request) {
                     const func = this.dataMovies.getMovies(currentPage, prevState.request, request);
@@ -110,59 +119,24 @@ export default class App extends Component {
 
     render (){
 
-        const { data, loading, error, currentPage, pages} = this.state;
+        const { data, loading, error, currentPage, pages, genres, tab} = this.state;
 
         const { TabPane } = Tabs;
 
-        const updateRequestDebounce = debounce(this.updateRequest, 700);
-
-        const spinner = <div className="spin">
-                            <Spin size='large' />
-                        </div>;
-
-        const errorComponent =  <Alert
-                                    message="Ошибка"
-                                    description={error}
-                                    type="error"
-                                />
-
-        const errorMessage = error ? errorComponent : null;
-
-
-        const movies = data.map((movie) => {
-
-            return (
-                <li className='movies__item'><Movie movie={movie} currentPage={currentPage}/></li>
-            )
-        })
-
-        const list = <ul className='movies__list'>
-                        {movies}
-                     </ul>;
-
-        const paginationComp = <Pagination current={currentPage} onChange={this.onChange} defaultPageSize={6} total={pages}/>;
-        
-        const contentWithoutError = loading ? spinner : list;
-
-        const content = error ? errorMessage : contentWithoutError;
-
-        const pagination = content === list ? paginationComp : null;
+    
 
 
         return (
+            <Provider value={genres}>
             <Tabs defaultActiveKey="1" centered onTabClick={this.tabClickHandler}>
                 <TabPane tab="Search" key="1" >
-                    <Input placeholder='Type to search...' onInput={updateRequestDebounce} autoFocus/>
-                    {content}
-                    <div className='movies__pagination'>{pagination}</div>
+                    <Tab tab={tab} data={data} onChange={this.onChange} loading={loading} error={error} currentPage={currentPage} pages={pages} updateRequest={this.updateRequest}/>
                 </TabPane>
                 <TabPane tab="Rated" key="2" >
-                    {content}
-                    <div className='movies__pagination'>{pagination}</div>
+                    <Tab tab={tab} data={data} onChange={this.onChange} loading={loading} error={error} currentPage={currentPage} pages={pages}/>
                 </TabPane>
             </Tabs>
-                
-            
+            </Provider>
         )
     }
 }

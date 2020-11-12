@@ -48,8 +48,13 @@ export default class MoviesData {
             }, {});
 
             const curPage = prevRequest !== query ? 1 : currentPage;
-            
+            console.log(moviesPages)
             return [moviesPages, movies.length, curPage];
         })
+    }
+
+    getGenres() {
+        return fetch(`${this.movieApi.apiBase}genre/movie/list?api_key=${this.movieApi.apiKey}&language=en-US`)
+        .then(res => res.json())
     }
 }

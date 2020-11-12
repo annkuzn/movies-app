@@ -8,6 +8,8 @@ import 'antd/dist/antd.css';
 
 import MovieOverview from '../movie-overview/movie-overview';
 import RateMovie from '../../services/rate-movie';
+import Genres from '../genres/genres';
+import VoteAverage from '../vote-average/vote-average';
 
 export default class Movie  extends Component {
 
@@ -20,7 +22,9 @@ export default class Movie  extends Component {
         poster: null,
         numberOfTitleLines: 1,
         rateValue: 0,
+        voteAverage: 0,
         id: null,
+        genresIds: null
     }
 
     myRef = React.createRef();
@@ -37,11 +41,7 @@ export default class Movie  extends Component {
         };
     };
 
-    rateChangeHandler = (event) => {
-        this.changeRateValue(event);
-    };
-
-    createMovieCard() {
+    createMovieCard = () => {
         const { movie } = this.props;
 
         const lineHeight = 31;
@@ -51,17 +51,23 @@ export default class Movie  extends Component {
         .then(res => {
             this.setState({
                 rateValue: res.rated.value ?  res.rated.value : 0,
+                voteAverage: +movie.vote_average,
                 title: movie.title,
                 overview: movie.overview,
                 date: format(new Date(movie.release_date), 'LLLL d, y'),
                 poster: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
                 numberOfTitleLines: titleHeight / lineHeight,
                 id: movie.id,
+                genresIds: movie.genre_ids
             })
         })
     };
 
-    async changeRateValue (event) {
+    rateChangeHandler = (event) => {
+        this.changeRateValue(event);
+    };
+
+    changeRateValue = (event) => {
         const { id } = this.state;
                 
         this.rate.postRateMovie(id, event);
@@ -73,34 +79,37 @@ export default class Movie  extends Component {
 
     render() {
         
-        const { title, overview, date, poster, numberOfTitleLines, rateValue} = this.state;
+        const { title, overview, date, poster, numberOfTitleLines, rateValue, voteAverage, genresIds} = this.state;
         const { movie, currentPage } = this.props;
+
 
         return (
             <div className='movies__div'>
                 <div>
                     <img className='movies__img' src={poster} alt={title} />
                 </div>
-                <div className='movies__details'>
-                    <div>
+                <div className='movies__description'>
+                    <div className='movies__details'>
                         <h1 className='movies__name' ref={this.myRef}>{movie.title}</h1>
                         <span className='movies__date'>{date}</span>
-                        <span className='movies__genre'>Action</span>
+                        <Genres genresIds={genresIds}/>
                         <MovieOverview overview={overview} numberOfTitleLines={numberOfTitleLines} currentPage={currentPage}/>
                     </div>
+                    <VoteAverage voteAverage={voteAverage}/>
                     <Rate count={10} value={rateValue} onChange={this.rateChangeHandler}/>
                 </div>
             </div>
         )
+
     };
 };
 
 Movie.defaultProps = {
     movie: [],
-    currentPage: null
+    currentPage: null,
 };
 
 Movie.propTypes = {
     movie: PropTypes.arrayOf(PropTypes.object),
-    currentPage: PropTypes.number
+    currentPage: PropTypes.number,
 };
