@@ -26,7 +26,7 @@ const Tab = ({data, loading, error, currentPage, pages, tab, paginationChangeHan
     const movies = data.map((movie) => {
         key += 1;
         return (
-            <li key={key} className='movies__item'><Movie movie={movie} /></li>
+            <li key={key.toString()} className='movies__item'><Movie movie={movie} /></li>
         )
     });
 
