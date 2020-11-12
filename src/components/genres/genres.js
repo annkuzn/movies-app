@@ -10,24 +10,23 @@ const Genres = ({ genresIds}) => {
 
     return (
         <Consumer>
-            {
-                ({genres}) => {
-
+            {genres => {
                     const movieGenres = genresIds ? genres.filter(genre => {
                         let result = false;
                         genresIds.forEach(item => {
                             if (genre.id === item) {
                                 result = true;
-                            }
-                        })
+                            };
+                        });
+
                         return result;
-                    }) : null
+                    }) : null;
                 
                     const currentGenres = movieGenres ? movieGenres.map( item => {
                         return (
                             <li className='movies__genre'>{item.name}</li>
                         )
-                    }) : null
+                    }) : null;
 
                     return (
                         <div className='movies__genresList__block'>
@@ -35,13 +34,11 @@ const Genres = ({ genresIds}) => {
                                 {currentGenres}
                             </ul>
                         </div>
-                    )
-                }
-            }
+                    );
+                }}
         </Consumer>
-    )
-        
-}
+    ); 
+};
 
 export default Genres;
 
@@ -51,4 +48,4 @@ Genres.defaultProps = {
 
 Genres.propTypes = {
     genresIds: PropTypes.arrayOf(PropTypes.number)
-}
+};
