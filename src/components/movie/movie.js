@@ -15,6 +15,8 @@ export default class Movie  extends Component {
 
     rate = new RateMovie();
 
+    myRef = React.createRef();
+
     state = {
         title: null,
         overview: null,
@@ -25,9 +27,7 @@ export default class Movie  extends Component {
         voteAverage: 0,
         id: null,
         genresIds: null
-    }
-
-    myRef = React.createRef();
+    };
 
     componentDidMount() {
         this.createMovieCard();
@@ -59,8 +59,8 @@ export default class Movie  extends Component {
                 numberOfTitleLines: titleHeight / lineHeight,
                 id: movie.id,
                 genresIds: movie.genre_ids
-            })
-        })
+            });
+        });
     };
 
     rateChangeHandler = (event) => {
@@ -74,14 +74,13 @@ export default class Movie  extends Component {
 
         this.setState({
             rateValue: event,
-        })
-    }
+        });
+    };
 
     render() {
         
-        const { title, overview, date, poster, numberOfTitleLines, rateValue, voteAverage, genresIds} = this.state;
-        const { movie, currentPage } = this.props;
-
+        const { title, overview, date, poster, numberOfTitleLines, rateValue, voteAverage, genresIds } = this.state;
+        const { movie } = this.props;
 
         return (
             <div className='movies__div'>
@@ -93,23 +92,21 @@ export default class Movie  extends Component {
                         <h1 className='movies__name' ref={this.myRef}>{movie.title}</h1>
                         <span className='movies__date'>{date}</span>
                         <Genres genresIds={genresIds}/>
-                        <MovieOverview overview={overview} numberOfTitleLines={numberOfTitleLines} currentPage={currentPage}/>
+                        <MovieOverview overview={overview} numberOfTitleLines={numberOfTitleLines} />
                     </div>
                     <VoteAverage voteAverage={voteAverage}/>
                     <Rate count={10} value={rateValue} onChange={this.rateChangeHandler}/>
                 </div>
             </div>
-        )
-
+        );
     };
 };
 
 Movie.defaultProps = {
     movie: [],
-    currentPage: null,
 };
 
 Movie.propTypes = {
-    movie: PropTypes.arrayOf(PropTypes.object),
-    currentPage: PropTypes.number,
+    // eslint-disable-next-line react/forbid-prop-types
+    movie: PropTypes.object,
 };

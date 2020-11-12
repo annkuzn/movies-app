@@ -10,21 +10,13 @@ export default class MoviesData {
 
         if (!res.ok) {
             throw new Error(`Could not fetch ${url}, received ${res.status}`);
-        }
+        };
+
         return res.json();
-    }
-    
-    getMovies(currentPage, prevRequest, query) {
-        return this.getResource('search/movie', query)
-        .then(res => {
-            const moviesArr = res.results;
-            if (!moviesArr.length) {
-                throw new Error(`Нет результатов по запросу "${query}"`);
-            }
-            return moviesArr;
-        })
-        .then(movies => {
-            const numberOfMoviesPerPage = 6;
+    };
+
+    processingMoviesArr(movies) {
+        const numberOfMoviesPerPage = 6;
             const numberOfFullPages = Math.round(movies.length / numberOfMoviesPerPage);
             const numberOfPages = movies.length % numberOfMoviesPerPage ?  numberOfFullPages + 1 : numberOfFullPages;
 
@@ -47,14 +39,30 @@ export default class MoviesData {
                 return acc;
             }, {});
 
+        return moviesPages;
+    }
+    
+    getMovies(currentPage, prevRequest, query) {
+
+        return this.getResource('search/movie', query)
+        .then(res => {
+            const moviesArr = res.results;
+            if (!moviesArr.length) {
+                throw new Error(`Нет результатов по запросу "${query}"`);
+            }
+            return moviesArr;
+        })
+        .then(movies => {
+            const moviesPages =this.processingMoviesArr(movies);
+
             const curPage = prevRequest !== query ? 1 : currentPage;
-            console.log(moviesPages)
+
             return [moviesPages, movies.length, curPage];
         })
     }
 
     getGenres() {
         return fetch(`${this.movieApi.apiBase}genre/movie/list?api_key=${this.movieApi.apiKey}&language=en-US`)
-        .then(res => res.json())
-    }
-}
+        .then(res => res.json());
+    };
+};

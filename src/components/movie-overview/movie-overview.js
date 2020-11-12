@@ -33,7 +33,9 @@ export default class MovieOverview extends Component{
 
     cutDescr = (overview) => {
         const { numberOfTitleLines } = this.props;
+
         let result = overview;
+
         const maxLengthOverview = 300;
         const numberHiddenSymbols = 80; // number of hidden overviews characters with one titles line
 
@@ -44,7 +46,8 @@ export default class MovieOverview extends Component{
             const ind = newDescr.lastIndexOf(' ');
 
             result = `${newDescr.substr(0, ind)}...`;
-        }
+        };
+
         return result;
     };
 
@@ -59,9 +62,6 @@ export default class MovieOverview extends Component{
     render() {
         const { overview } = this.state;
 
-        return (
-            <p className='movies__descr'>{overview}</p>
-        );
+        return <p className='movies__descr'>{overview}</p>;
     };
-    
 };
