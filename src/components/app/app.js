@@ -27,24 +27,20 @@ export default class App extends Component {
         error: false,
         pages: 1,
         tab: 1,
-        genres: null
+        genres: null,
+        sessionId: null
     };
 
     timer = null;
 
-    componentDidMount() {
-        if (!localStorage.token) {
-            
-            this.sessionData.getToken()
-            .then(token => {
-                this.sessionData.redirection(token);
-                localStorage.setItem('token', token);
-            })
-        } else if (!localStorage.session_id) {
-            this.sessionData.getSessionId(localStorage.token)
-            .then(id => localStorage.setItem('session_id', id));
-        };
+    async componentDidMount() {   
         
+        if (!this.sessionData.sessionId) {
+            const id = await this.getId();
+            this.setState({
+                sessionId: id
+            })
+        };
         this.dataMovies.getGenres()
         .then(res => {
             this.setState({
@@ -54,8 +50,7 @@ export default class App extends Component {
     };
 
     componentDidUpdate(prevProp, prevState) {
-        const { request, currentPage, tab} = this.state;
-        
+        const { request, currentPage, tab, sessionId} = this.state;
         if(prevState.tab !== tab || prevState.request !== request || prevState.currentPage !== currentPage) {
             if(tab === 1) {
                 if(request) {
@@ -63,11 +58,16 @@ export default class App extends Component {
                     this.searchMovies(func);
                 };
             } else if(tab === 2) {
-                const func = this.rateMovie.getRateMovies(currentPage)
+                const func = this.rateMovie.getRateMovies(currentPage, sessionId)
                 this.searchMovies(func);
             };
         };
     };
+
+    async getId() {
+        const result = await this.sessionData.getSessionId();
+        return result;
+    }
 
     searchMovies = (func) => {
         func.then(([movies, numberOfPages, curPage])=> {
@@ -119,7 +119,7 @@ export default class App extends Component {
 
     render () {
 
-        const { data, loading, error, currentPage, pages, genres, tab} = this.state;
+        const { data, loading, error, currentPage, pages, genres, tab, sessionId} = this.state;
 
         const { TabPane } = Tabs;
 
@@ -132,10 +132,11 @@ export default class App extends Component {
                             data={data}
                             error={error}
                             pages={pages}
-                            loading={loading} 
+                            loading={loading}
+                            sessionId = {sessionId}
                             currentPage={currentPage} 
                             updateRequest={this.updateRequest}
-                            paginationChangeHandler={this.paginationChangeHandler} 
+                            paginationChangeHandler={this.paginationChangeHandler}
                         />
                     </TabPane>
                     <TabPane tab="Rated" key="2" >
@@ -144,7 +145,8 @@ export default class App extends Component {
                             data={data}
                             error={error}
                             pages={pages}
-                            loading={loading} 
+                            loading={loading}
+                            sessionId = {sessionId}
                             currentPage={currentPage} 
                             paginationChangeHandler={this.paginationChangeHandler}                       
                         />

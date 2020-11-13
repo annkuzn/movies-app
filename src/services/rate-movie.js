@@ -9,10 +9,8 @@ export default class RateMovie {
 
     sessionData = new SessionData ();
 
-    sessionId = localStorage.session_id;
-
-    postRateMovie (movieId, rateValue) {
-        return fetch(`${this.movieApi.apiBase}movie/${movieId}/rating?api_key=${this.movieApi.apiKey}&session_id=${this.sessionId}`, {
+    postRateMovie (movieId, rateValue, sessionId) {
+        return fetch(`${this.movieApi.apiBase}movie/${movieId}/rating?api_key=${this.movieApi.apiKey}&guest_session_id=${sessionId}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json;charset=utf-8',
@@ -21,15 +19,14 @@ export default class RateMovie {
         });
     };
 
-    getRateMovies (currentPage) {
-        const accauntId = this.sessionData.getAccauntId(this.sessionId);
-
-        return fetch(`${this.movieApi.apiBase}account/${accauntId}/rated/movies?api_key=${this.movieApi.apiKey}&language=en-US&session_id=${this.sessionId}&sort_by=created_at.asc`)
+    getRateMovies (currentPage, sessionId) {
+        
+        return fetch(`${this.movieApi.apiBase}guest_session/${sessionId}/rated/movies?api_key=${this.movieApi.apiKey}&language=en-US&sort_by=created_at.asc`)
         .then(res => res.json())
         .then(res => {
             const moviesArr = res.results;
-            
-            if (!moviesArr) {
+
+            if (!moviesArr.length) {
                 throw new Error(`Пока нет оцененных фильмов`);
             }
 
@@ -37,13 +34,14 @@ export default class RateMovie {
         })
         .then(movies => {
             const moviesPages = this.moviesData.processingMoviesArr(movies);
-
+            
             return [moviesPages, movies.length, currentPage];
-        });
+        })
     };
 
-    getRateMovie(movieId) {
-        return fetch(`${this.movieApi.apiBase}movie/${movieId}/account_states?api_key=${this.movieApi.apiKey}&session_id=${this.sessionId}`)
-        .then(res => res.json());
+    getRateMovie(movieId, sessionId) {
+        
+        return fetch(`${this.movieApi.apiBase}movie/${movieId}/account_states?api_key=${this.movieApi.apiKey}&guest_session_id=${sessionId}`)
+        .then(res => res.json())
     };
 };

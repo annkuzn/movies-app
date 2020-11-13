@@ -11,9 +11,13 @@ import RateMovie from '../../services/rate-movie';
 import Genres from '../genres/genres';
 import VoteAverage from '../vote-average/vote-average';
 
+import SessionData from '../../services/session-data';
+
 export default class Movie  extends Component {
 
     rate = new RateMovie();
+
+    sessionData = new SessionData ();
 
     myRef = React.createRef();
 
@@ -46,20 +50,16 @@ export default class Movie  extends Component {
 
         const lineHeight = 31;
         const titleHeight = this.myRef.current.clientHeight;
-
-        this.rate.getRateMovie(movie.id)
-        .then(res => {
-            this.setState({
-                rateValue: res.rated.value ?  res.rated.value : 0,
-                voteAverage: +movie.vote_average,
-                title: movie.title,
-                overview: movie.overview,
-                date: format(new Date(movie.release_date), 'LLLL d, y'),
-                poster: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
-                numberOfTitleLines: titleHeight / lineHeight,
-                id: movie.id,
-                genresIds: movie.genre_ids
-            });
+        this.setState({
+            rateValue: movie.rating ? movie.rating : 0,
+            voteAverage: +movie.vote_average,
+            title: movie.title,
+            overview: movie.overview,
+            date: format(new Date(movie.release_date), 'LLLL d, y'),
+            poster: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
+            numberOfTitleLines: titleHeight / lineHeight,
+            id: movie.id,
+            genresIds: movie.genre_ids
         });
     };
 
@@ -69,8 +69,9 @@ export default class Movie  extends Component {
 
     changeRateValue = (event) => {
         const { id } = this.state;
+        const { sessionId } = this.props;
                 
-        this.rate.postRateMovie(id, event);
+        this.rate.postRateMovie(id, event, sessionId);
 
         this.setState({
             rateValue: event,
@@ -102,9 +103,11 @@ export default class Movie  extends Component {
 
 Movie.defaultProps = {
     movie: [],
+    sessionId: null
 };
 
 Movie.propTypes = {
     // eslint-disable-next-line react/forbid-prop-types
     movie: PropTypes.object,
+    sessionId: PropTypes.string
 };

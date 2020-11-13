@@ -7,7 +7,7 @@ import Movie from '../movie/movie';
 
 import 'antd/dist/antd.css';
 
-const Tab = ({data, loading, error, currentPage, pages, tab, paginationChangeHandler, updateRequest}) => {
+const Tab = ({data, loading, error, currentPage, pages, tab, sessionId, paginationChangeHandler, updateRequest}) => {
 
     const updateRequestDebounce = debounce(updateRequest, 700);
 
@@ -26,7 +26,7 @@ const Tab = ({data, loading, error, currentPage, pages, tab, paginationChangeHan
     const movies = data.map((movie) => {
         key += 1;
         return (
-            <li key={key.toString()} className='movie'><Movie movie={movie} /></li>
+            <li key={key.toString()} className='movie'><Movie movie={movie} sessionId = {sessionId}/></li>
         )
     });
 
@@ -66,6 +66,7 @@ Tab.defaultProps = {
     error: false,
     currentPage: 1,
     pages: 1,
+    sessionId: null,
     updateRequest: (() => {}),
     tab: 1,
     paginationChangeHandler: (() => {})
@@ -77,6 +78,7 @@ Tab.propTypes = {
     error: PropTypes.bool,
     currentPage: PropTypes.number,
     pages: PropTypes.number,
+    sessionId: PropTypes.string,
     updateRequest: PropTypes.func,
     tab: PropTypes.number,
     paginationChangeHandler: PropTypes.func
