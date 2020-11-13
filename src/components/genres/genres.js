@@ -24,13 +24,13 @@ const Genres = ({ genresIds}) => {
                 
                     const currentGenres = movieGenres ? movieGenres.map( item => {
                         return (
-                            <li className='movies__genre'>{item.name}</li>
+                            <li className='movie__genre'>{item.name}</li>
                         )
                     }) : null;
 
                     return (
-                        <div className='movies__genresList__block'>
-                            <ul className='movies__genres__list'>
+                        <div className='movie__genresList-block'>
+                            <ul className='movie__genres-list'>
                                 {currentGenres}
                             </ul>
                         </div>

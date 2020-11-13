@@ -43,3 +43,29 @@ margin: 0 auto 16px auto;
 .ant-tabs-tabpane {
     padding: 13px;
 }
+
+
+@media (max-width: 970px) {
+    .movies__list {
+       grid-template-columns: 100%; 
+    }
+}
+
+@media (max-width: 420px) {
+    #root {
+        padding: 0;
+    }
+}
+
+@media (max-width: 327px) {
+    * {
+        font-size: 3.4vw;
+        line-height: 6.5vw;
+    }
+}
+
+@media (max-width: 469px) {
+    * {
+        font-size: 11.5px;
+    }
+}

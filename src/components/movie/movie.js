@@ -83,21 +83,19 @@ export default class Movie  extends Component {
         const { movie } = this.props;
 
         return (
-            <div className='movies__div'>
-                <div>
-                    <img className='movies__img' src={poster} alt={title} />
+            <>
+                <div className='movie__poster'>
+                    <img className='movie__img' src={poster} alt={title} />
                 </div>
-                <div className='movies__description'>
-                    <div className='movies__details'>
-                        <h1 className='movies__name' ref={this.myRef}>{movie.title}</h1>
-                        <span className='movies__date'>{date}</span>
-                        <Genres genresIds={genresIds}/>
-                        <MovieOverview overview={overview} numberOfTitleLines={numberOfTitleLines} />
-                    </div>
-                    <VoteAverage voteAverage={voteAverage}/>
-                    <Rate count={10} value={rateValue} onChange={this.rateChangeHandler}/>
+                <div className='movie__details'>
+                    <h1 className='movie__name' ref={this.myRef}>{movie.title}</h1>
+                    <span className='movie__date'>{date}</span>
+                    <Genres genresIds={genresIds}/>
                 </div>
-            </div>
+                <MovieOverview overview={overview} numberOfTitleLines={numberOfTitleLines} />
+                <VoteAverage voteAverage={voteAverage}/>
+                <Rate className='movie__rate' count={10} value={rateValue} onChange={this.rateChangeHandler}/>
+            </>
         );
     };
 };

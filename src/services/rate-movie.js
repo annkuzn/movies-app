@@ -27,10 +27,9 @@ export default class RateMovie {
         return fetch(`${this.movieApi.apiBase}account/${accauntId}/rated/movies?api_key=${this.movieApi.apiKey}&language=en-US&session_id=${this.sessionId}&sort_by=created_at.asc`)
         .then(res => res.json())
         .then(res => {
-            console.log(res)
             const moviesArr = res.results;
-            console.log(moviesArr)
-            if (!moviesArr.length) {
+            
+            if (!moviesArr) {
                 throw new Error(`Пока нет оцененных фильмов`);
             }
 

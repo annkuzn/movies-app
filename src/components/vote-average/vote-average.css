@@ -1,0 +1,26 @@
+.movie__voteAverage {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    height: 30px;
+    width: 30px;
+    border-radius: 90%;
+    text-align: center;
+    padding-top: 4px;
+}
+
+.movie__voteAverageRed {
+    border: 2px solid #E90000;
+}
+
+.movie__voteAverageOrange {
+    border: 2px solid #E97E00;
+}
+
+.movie__voteAverageYellow {
+    border: 2px solid #E9D100;
+}
+
+.movie__voteAverageGreen {
+    border: 2px solid #66E900;
+}

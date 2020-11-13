@@ -38,7 +38,7 @@ export default class App extends Component {
             this.sessionData.getToken()
             .then(token => {
                 this.sessionData.redirection(token);
-                localStorage.setItem('token', token);
+                localStorage.setItem('session_id', token);
             })
         } else if (!localStorage.session_id) {
             this.sessionData.getSessionId(localStorage.token)

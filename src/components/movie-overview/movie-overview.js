@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
+import './movie-overview.css';
 
 export default class MovieOverview extends Component{
 
@@ -62,6 +63,6 @@ export default class MovieOverview extends Component{
     render() {
         const { overview } = this.state;
 
-        return <p className='movies__descr'>{overview}</p>;
+        return <p className='movie__descr'>{overview}</p>;
     };
 };

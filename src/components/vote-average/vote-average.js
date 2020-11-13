@@ -6,7 +6,7 @@ import './vote-average.css';
 
 const VoteAverage = ({ voteAverage }) => {
 
-    let voteAverageClass = 'movies__voteAverage movies__voteAverage';
+    let voteAverageClass = 'movie__voteAverage movie__voteAverage';
 
     if(voteAverage < 3) {
         voteAverageClass += 'Red';

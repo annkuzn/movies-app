@@ -1,0 +1,32 @@
+.movie__descr {
+    margin-bottom: 0;
+    line-height: 22px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+@media (max-width: 420px) {
+
+    .movie__descr {
+        line-height: 20px;
+        padding: 0 10px;
+        grid-column: 1 / -1;
+    }
+}
+
+@media (min-width: 421px ) {
+
+    .movie__descr {
+        margin-bottom: 0;
+        grid-row: 2;
+        grid-column: 2;
+        padding: 0 13px;
+    }
+}
+
+@media (min-width: 421px ) and (max-width: 500px) {
+
+    .movie__descr {
+        line-height: 4.5vw;
+    }
+}
