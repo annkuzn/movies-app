@@ -26,7 +26,6 @@ export default class Movie  extends Component {
         overview: null,
         date: null,
         poster: null,
-        numberOfTitleLines: 1,
         rateValue: 0,
         voteAverage: 0,
         id: null,
@@ -48,8 +47,6 @@ export default class Movie  extends Component {
     createMovieCard = () => {
         const { movie } = this.props;
 
-        const lineHeight = 31;
-        const titleHeight = this.myRef.current.clientHeight;
         this.setState({
             rateValue: movie.rating ? movie.rating : 0,
             voteAverage: +movie.vote_average,
@@ -57,7 +54,6 @@ export default class Movie  extends Component {
             overview: movie.overview,
             date: format(new Date(movie.release_date), 'LLLL d, y'),
             poster: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
-            numberOfTitleLines: titleHeight / lineHeight,
             id: movie.id,
             genresIds: movie.genre_ids
         });
@@ -80,8 +76,8 @@ export default class Movie  extends Component {
 
     render() {
         
-        const { title, overview, date, poster, numberOfTitleLines, rateValue, voteAverage, genresIds } = this.state;
-        const { movie } = this.props;
+        const { title, overview, date, poster, rateValue, voteAverage, genresIds } = this.state;
+        const { ind } = this.props;
 
         return (
             <>
@@ -89,11 +85,11 @@ export default class Movie  extends Component {
                     <img className='movie__img' src={poster} alt={title} />
                 </div>
                 <div className='movie__details'>
-                    <h1 className='movie__name' ref={this.myRef}>{movie.title}</h1>
+                    <h1 className='movie__name' >{title}</h1>
                     <span className='movie__date'>{date}</span>
                     <Genres genresIds={genresIds}/>
                 </div>
-                <MovieOverview overview={overview} numberOfTitleLines={numberOfTitleLines} />
+                <MovieOverview overview={overview} ind={ind} />
                 <VoteAverage voteAverage={voteAverage}/>
                 <Rate className='movie__rate' count={10} value={rateValue} onChange={this.rateChangeHandler}/>
             </>
@@ -103,11 +99,13 @@ export default class Movie  extends Component {
 
 Movie.defaultProps = {
     movie: [],
-    sessionId: null
+    sessionId: null,
+    ind: 0
 };
 
 Movie.propTypes = {
     // eslint-disable-next-line react/forbid-prop-types
     movie: PropTypes.object,
-    sessionId: PropTypes.string
+    sessionId: PropTypes.string,
+    ind: PropTypes.number
 };

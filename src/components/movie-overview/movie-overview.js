@@ -7,12 +7,12 @@ export default class MovieOverview extends Component{
 
     static defaultProps = {
         overview: null,
-        numberOfTitleLines: null,
+        ind: 0
     };
     
     static propTypes = {
         overview: PropTypes.string,
-        numberOfTitleLines: PropTypes.number,
+        ind: PropTypes.number
     };
 
     state = {
@@ -21,7 +21,6 @@ export default class MovieOverview extends Component{
 
     componentDidMount() {
         this.updateDescr();
-
     };
 
     componentDidUpdate(prevProps) {
@@ -33,7 +32,12 @@ export default class MovieOverview extends Component{
     };
 
     cutDescr = (overview) => {
-        const { numberOfTitleLines } = this.props;
+        const { ind } = this.props;
+        const titles = document.querySelectorAll('.movie__name');
+
+        const lineHeight = 31;
+        const currentTitle = titles[ind-1];
+        const numberOfTitleLines = currentTitle.clientHeight / lineHeight
 
         let result = overview;
 
@@ -44,9 +48,9 @@ export default class MovieOverview extends Component{
 
         if (overview.length > length) {
             const newDescr = overview.substr(0, length);
-            const ind = newDescr.lastIndexOf(' ');
+            const index = newDescr.lastIndexOf(' ');
 
-            result = `${newDescr.substr(0, ind)}...`;
+            result = `${newDescr.substr(0, index)}...`;
         };
 
         return result;
