@@ -19,8 +19,6 @@ export default class Movie  extends PureComponent {
 
     sessionData = new SessionData ();
 
-    myRef = React.createRef();
-
     state = {
         title: null,
         overview: null,
@@ -84,7 +82,7 @@ export default class Movie  extends PureComponent {
                     <img className='movie__img' src={poster} alt={title} />
                 </div>
                 <div className='movie__details'>
-                    <h1 className='movie__name' >{title}</h1>
+                    <h1 className='movie__name'>{title}</h1>
                     <span className='movie__date'>{date}</span>
                     <Genres genresIds={genresIds}/>
                 </div>
