@@ -21,10 +21,12 @@ const Genres = ({ genresIds}) => {
 
                         return result;
                     }) : null;
-                
+                    let key = 0;
                     const currentGenres = movieGenres ? movieGenres.map( item => {
+                        key += 1;
+
                         return (
-                            <li className='movie__genre'>{item.name}</li>
+                            <li key={key} className='movie__genre'>{item.name}</li>
                         )
                     }) : null;
 
