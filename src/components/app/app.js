@@ -52,6 +52,9 @@ export default class App extends Component {
     componentDidUpdate(prevProp, prevState) {
         const { request, currentPage, tab, sessionId} = this.state;
         if(prevState.tab !== tab || prevState.request !== request || prevState.currentPage !== currentPage) {
+
+            this.changeLoading();
+
             if(tab === 1) {
                 if(request) {
                     const func = this.dataMovies.getMovies(currentPage, prevState.request, request);
@@ -72,6 +75,12 @@ export default class App extends Component {
     async getId() {
         const result = await this.sessionData.getSessionId();
         return result;
+    }
+
+    changeLoading = () => {
+        this.setState({
+            loading: true
+        })
     }
 
     searchMovies = (func) => {
