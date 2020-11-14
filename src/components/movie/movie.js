@@ -1,10 +1,10 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { format } from 'date-fns';
-import { Rate } from 'antd';
+import { Rate, Skeleton } from 'antd';
 
-import './movie.css';
 import 'antd/dist/antd.css';
+import './movie.css';
 
 import MovieOverview from '../movie-overview/movie-overview';
 import RateMovie from '../../services/rate-movie';
@@ -51,7 +51,7 @@ export default class Movie  extends PureComponent {
             title: movie.title,
             overview: movie.overview,
             date: format(new Date(movie.release_date), 'LLLL d, y'),
-            poster: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
+            poster: movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : null,
             id: movie.id,
             genresIds: movie.genre_ids
         });
@@ -76,10 +76,17 @@ export default class Movie  extends PureComponent {
         
         const { title, overview, date, poster, rateValue, voteAverage, genresIds } = this.state;
         const { ind } = this.props;
+
+        const imageSkeleton = <Skeleton.Image className='movie__img'/>
+
+        const img = <img className='movie__img' src={poster} alt={title} />
+        
+        const image = poster ? img : imageSkeleton;
+
         return (
             <>
                 <div className='movie__poster'>
-                    <img className='movie__img' src={poster} alt={title} />
+                    {image}
                 </div>
                 <div className='movie__details'>
                     <h1 className='movie__name'>{title}</h1>
