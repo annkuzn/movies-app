@@ -6,20 +6,20 @@ import './vote-average.css';
 
 const VoteAverage = ({ voteAverage }) => {
 
-    let voteAverageClass = 'movie__voteAverage movie__voteAverage';
+    let borderColor;
 
     if(voteAverage < 3) {
-        voteAverageClass += 'Red';
+        borderColor = 'Red';
     } else if (voteAverage < 5) {
-        voteAverageClass += 'Orange';
+        borderColor = 'Orange';
     } else if (voteAverage < 7) {
-        voteAverageClass += 'Yellow';
+        borderColor = 'Yellow';
     } else {
-        voteAverageClass += 'Green';
+        borderColor = 'Green';
     };
 
     return (
-        <div className={voteAverageClass}>
+        <div className='movie__voteAverage' style={{ border: `2px solid ${borderColor}`}}>
             <span>{voteAverage}</span>
         </div>
     );
