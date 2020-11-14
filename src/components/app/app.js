@@ -60,9 +60,14 @@ export default class App extends Component {
             } else if(tab === 2) {
                 const func = this.rateMovie.getRateMovies(currentPage, sessionId)
                 this.searchMovies(func);
+
             };
         };
     };
+
+    componentDidCatch(err){
+        this.onError(err.message);
+    }
 
     async getId() {
         const result = await this.sessionData.getSessionId();
@@ -120,9 +125,9 @@ export default class App extends Component {
     render () {
 
         const { data, loading, error, currentPage, pages, genres, tab, sessionId} = this.state;
-
+        
         const { TabPane } = Tabs;
-
+        
         return (
             <Provider value={genres}>
                 <Tabs defaultActiveKey="1" centered onTabClick={this.tabClickHandler}>
