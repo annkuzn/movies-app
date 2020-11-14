@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { format } from 'date-fns';
 import { Rate } from 'antd';
@@ -13,7 +13,7 @@ import VoteAverage from '../vote-average/vote-average';
 
 import SessionData from '../../services/session-data';
 
-export default class Movie  extends Component {
+export default class Movie  extends PureComponent {
 
     rate = new RateMovie();
 
@@ -78,7 +78,6 @@ export default class Movie  extends Component {
         
         const { title, overview, date, poster, rateValue, voteAverage, genresIds } = this.state;
         const { ind } = this.props;
-
         return (
             <>
                 <div className='movie__poster'>
