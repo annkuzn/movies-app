@@ -10,19 +10,20 @@ export default class RateMovie {
     sessionData = new SessionData ();
 
     postRateMovie (movieId, rateValue, sessionId) {
-        return fetch(`${this.movieApi.apiBase}movie/${movieId}/rating?api_key=${this.movieApi.apiKey}&guest_session_id=${sessionId}`, {
+
+        const options = {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json;charset=utf-8',
             },
             body: JSON.stringify({"value": rateValue })
-        });
+        }
+
+        return this.movieApi.getResource(`movie/${movieId}/rating`, `guest_session_id=${sessionId}`, options);
     };
 
     getRateMovies (currentPage, sessionId) {
-        
-        return fetch(`${this.movieApi.apiBase}guest_session/${sessionId}/rated/movies?api_key=${this.movieApi.apiKey}&language=en-US&sort_by=created_at.asc`)
-        .then(res => res.json())
+        return this.movieApi.getResource(`guest_session/${sessionId}/rated/movies`, 'language=en-US&sort_by=created_at.asc')
         .then(res => {
             const moviesArr = res.results;
 
@@ -40,8 +41,6 @@ export default class RateMovie {
     };
 
     getRateMovie(movieId, sessionId) {
-        
-        return fetch(`${this.movieApi.apiBase}movie/${movieId}/account_states?api_key=${this.movieApi.apiKey}&guest_session_id=${sessionId}`)
-        .then(res => res.json())
+        return this.movieApi.getResource(`movie/${movieId}/account_states`, `guest_session_id=${sessionId}`);
     };
 };

@@ -4,17 +4,6 @@ export default class MoviesData {
 
     movieApi = new MovieApi();
 
-    async getResource(url, query) {
-       
-        const res = await fetch(`${this.movieApi.apiBase}${url}?api_key=${this.movieApi.apiKey}&query=${query}`);
-
-        if (!res.ok) {
-            throw new Error(`Could not fetch ${url}, received ${res.status}`);
-        };
-
-        return res.json();
-    };
-
     processingMoviesArr(movies) {
         const numberOfMoviesPerPage = 6;
             const numberOfFullPages = Math.round(movies.length / numberOfMoviesPerPage);
@@ -44,7 +33,7 @@ export default class MoviesData {
     
     getMovies(currentPage, prevRequest, query) {
 
-        return this.getResource('search/movie', query)
+        return this.movieApi.getResource('search/movie', `query=${query}`)
         .then(res => {
             const moviesArr = res.results;
             if (!moviesArr.length) {
@@ -62,7 +51,6 @@ export default class MoviesData {
     }
 
     getGenres() {
-        return fetch(`${this.movieApi.apiBase}genre/movie/list?api_key=${this.movieApi.apiKey}&language=en-US`)
-        .then(res => res.json());
+        return this.movieApi.getResource('genre/movie/list', 'language=en-US');
     };
 };

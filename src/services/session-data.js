@@ -7,13 +7,10 @@ export default class SessionData {
     sessionId = null;
 
     async getSessionId() {
-        const result = await fetch(`${this.movieApi.apiBase}authentication/guest_session/new?api_key=${this.movieApi.apiKey}`)
-        .then(res => res.json())
+        return this.movieApi.getResource('authentication/guest_session/new')
         .then(async res => {
             this.sessionId = await res.guest_session_id;
             return this.sessionId;
         });
-
-        return result;
     };
 };
