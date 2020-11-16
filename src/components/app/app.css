@@ -57,6 +57,20 @@
     padding: 13px;
 }
 
+.movie__genres-list::-webkit-scrollbar-thumb, .movie__name::-webkit-scrollbar-thumb{
+    background-color: rgb(201, 201, 201);
+}
+
+.movie__genres-list::-webkit-scrollbar-thumb:hover, .movie__name::-webkit-scrollbar-thumb:hover{
+
+    background-color: rgb(141, 141, 141);
+}
+
+
+.movie__genres-list::-webkit-scrollbar-track:hover, .movie__name::-webkit-scrollbar-track:hover{
+    background-color: #eee;
+}
+
 
 @media (max-width: 970px) {
     .movies__list {
