@@ -64,7 +64,7 @@ export default class Movie  extends PureComponent {
 
         this.setState({
             rateValue: movie.rating ? movie.rating : 0,
-            voteAverage: +movie.vote_average,
+            voteAverage: movie.vote_average ? +movie.vote_average : 0,
             title: movie.title,
             overview: movie.overview,
             date: movie.release_date ? format(new Date(movie.release_date), 'LLLL d, y') : null,
