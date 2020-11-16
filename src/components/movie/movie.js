@@ -15,6 +15,23 @@ import SessionData from '../../services/session-data';
 
 export default class Movie  extends PureComponent {
 
+    static defaultProps = {
+        movie: [],
+        sessionId: null,
+        ind: 0
+    };
+    
+    static propTypes = {
+        movie: PropTypes.objectOf(PropTypes.oneOfType([
+            PropTypes.string,
+            PropTypes.number,
+            PropTypes.bool,
+            PropTypes.array
+        ])),
+        sessionId: PropTypes.string,
+        ind: PropTypes.number
+    };
+
     rate = new RateMovie();
 
     sessionData = new SessionData ();
@@ -99,17 +116,4 @@ export default class Movie  extends PureComponent {
             </>
         );
     };
-};
-
-Movie.defaultProps = {
-    movie: [],
-    sessionId: null,
-    ind: 0
-};
-
-Movie.propTypes = {
-    // eslint-disable-next-line react/forbid-prop-types
-    movie: PropTypes.object,
-    sessionId: PropTypes.string,
-    ind: PropTypes.number
 };
