@@ -67,7 +67,7 @@ export default class Movie  extends PureComponent {
             voteAverage: +movie.vote_average,
             title: movie.title,
             overview: movie.overview,
-            date: format(new Date(movie.release_date), 'LLLL d, y'),
+            date: movie.release_date ? format(new Date(movie.release_date), 'LLLL d, y') : null,
             poster: movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : null,
             id: movie.id,
             genresIds: movie.genre_ids
