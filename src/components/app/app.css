@@ -6,6 +6,19 @@
     margin-top: 32px;
 }
 
+.search-input {
+    margin-bottom: 32px;
+}
+
+.ant-alert.ant-alert-no-icon {
+    padding: 20px;
+    text-align: center;
+}
+
+.ant-alert-message {
+   font-size: 18px; 
+}
+
 .spin {
     text-align: center;
     border-radius: 4px;
