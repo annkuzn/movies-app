@@ -22,7 +22,7 @@ export default class RateMovie {
         return this.movieApi.getResource(`movie/${movieId}/rating`, `guest_session_id=${sessionId}`, options);
     };
 
-    getRateMovies (currentPage, sessionId) {
+    getRateMovies (sessionId) {
         return this.movieApi.getResource(`guest_session/${sessionId}/rated/movies`, 'language=en-US&sort_by=created_at.asc')
         .then(res => {
             const moviesArr = res.results;
@@ -31,12 +31,7 @@ export default class RateMovie {
                 throw new Error(`Пока нет оцененных фильмов`);
             }
 
-            return moviesArr;
-        })
-        .then(movies => {
-            const moviesPages = this.moviesData.processingMoviesArr(movies);
-            
-            return [moviesPages, movies.length, currentPage];
+            return [moviesArr];
         })
     };
 

@@ -20,12 +20,12 @@ export default class App extends Component {
     rateMovie = new RateMovie();
 
     state = {
-        request: '',
-        data: [],
+        request: null,
+        data: null,
         currentPage: 1,
-        loading: true,
+        loading: false,
         error: false,
-        pages: 1,
+        totalPages: 1,
         tab: 1,
         genres: null,
         sessionId: null
@@ -55,16 +55,23 @@ export default class App extends Component {
 
             this.changeLoading();
 
+            if(prevState.tab !== tab) {
+                this.removeRequest();
+            }
+
             if(tab === 1) {
                 if(request) {
                     const func = this.dataMovies.getMovies(currentPage, prevState.request, request);
                     this.searchMovies(func);
-                };
+                } else {
+                    this.handleEmptyRequest();
+                }
             } else if(tab === 2) {
-                const func = this.rateMovie.getRateMovies(currentPage, sessionId)
+                const func = this.rateMovie.getRateMovies(sessionId)
                 this.searchMovies(func);
 
             };
+            
         };
     };
 
@@ -77,6 +84,20 @@ export default class App extends Component {
         return result;
     }
 
+    handleEmptyRequest = () => {
+        this.setState({
+            error: false,
+            loading: false,
+            data: null
+        })
+    }
+
+    removeRequest = () => {
+        this.setState({
+            request: null
+        })
+    }
+
     changeLoading = () => {
         this.setState({
             loading: true
@@ -84,13 +105,13 @@ export default class App extends Component {
     }
 
     searchMovies = (func) => {
-        func.then(([movies, numberOfPages, curPage])=> {
+        func.then(([movies, pages, curPage])=> {
             this.setState({
-                data: movies[curPage],
+                data: movies,
                 loading: false,
                 error: false,
-                currentPage: curPage,
-                pages: numberOfPages
+                totalPages: pages,
+                currentPage: curPage
             });
         })
         .catch((err) => {this.onError(err.message)}); 
@@ -107,7 +128,7 @@ export default class App extends Component {
         this.setState({
             currentPage: page,
         });
-      };
+      };    
 
     updateRequest = (newRequest) => {
         this.setState({
@@ -133,7 +154,7 @@ export default class App extends Component {
 
     render () {
 
-        const { data, loading, error, currentPage, pages, genres, tab, sessionId} = this.state;
+        const { data, loading, error, currentPage, totalPages, genres, tab, sessionId} = this.state;
         
         const { TabPane } = Tabs;
         
@@ -145,10 +166,10 @@ export default class App extends Component {
                             tab={tab} 
                             data={data}
                             error={error}
-                            pages={pages}
                             loading={loading}
                             sessionId = {sessionId}
-                            currentPage={currentPage} 
+                            currentPage={currentPage}
+                            totalPages={totalPages}
                             updateRequest={this.updateRequest}
                             paginationChangeHandler={this.paginationChangeHandler}
                         />
@@ -158,10 +179,10 @@ export default class App extends Component {
                             tab={tab} 
                             data={data}
                             error={error}
-                            pages={pages}
                             loading={loading}
                             sessionId = {sessionId}
-                            currentPage={currentPage} 
+                            currentPage={currentPage}
+                            totalPages={totalPages}
                             paginationChangeHandler={this.paginationChangeHandler}                       
                         />
                     </TabPane>

@@ -3,50 +3,21 @@ import MovieApi from './movie-api';
 export default class MoviesData {
 
     movieApi = new MovieApi();
-
-    processingMoviesArr(movies) {
-        const numberOfMoviesPerPage = 6;
-            const numberOfFullPages = Math.round(movies.length / numberOfMoviesPerPage);
-            const numberOfPages = movies.length % numberOfMoviesPerPage ?  numberOfFullPages + 1 : numberOfFullPages;
-
-            // eslint-disable-next-line no-shadow
-            let page = 1;
-
-            const moviesPages = movies.reduce((acc, movie) => {
-                if (Object.keys(acc).length <= numberOfPages) {
-
-                    if (!acc[page]) {
-                        acc[page] = [movie];
-                    } else if (acc[page].length < numberOfMoviesPerPage) {
-                        acc[page] = [...acc[page], movie];
-                    }
-
-                    if (acc[page].length === numberOfMoviesPerPage) {
-                        page += 1;
-                    }
-                }
-                return acc;
-            }, {});
-
-        return moviesPages;
-    }
     
-    getMovies(currentPage, prevRequest, query) {
-
-        return this.movieApi.getResource('search/movie', `query=${query}`)
+    getMovies(currentPage, prevRequest, request) {
+        return this.movieApi.getResource('search/movie', `query=${request}&page=${currentPage}`)
         .then(res => {
             const moviesArr = res.results;
             if (!moviesArr.length) {
-                throw new Error(`Нет результатов по запросу "${query}"`);
+                throw new Error(`Нет результатов по запросу "${request}"`);
             }
-            return moviesArr;
+            return [moviesArr, res.total_results];
         })
-        .then(movies => {
-            const moviesPages =this.processingMoviesArr(movies);
+        .then(([movies, totalPages]) => {
 
-            const curPage = prevRequest !== query ? 1 : currentPage;
+            const curPage = prevRequest === request ? currentPage : 1;
 
-            return [moviesPages, movies.length, curPage];
+            return [movies, totalPages, curPage];
         })
     }
 
