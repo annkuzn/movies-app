@@ -9,13 +9,13 @@ const VoteAverage = ({ voteAverage }) => {
     let borderColor;
 
     if(voteAverage < 3) {
-        borderColor = 'Red';
+        borderColor = '#E90000';
     } else if (voteAverage < 5) {
-        borderColor = 'Orange';
+        borderColor = '#E97E00';
     } else if (voteAverage < 7) {
-        borderColor = 'Yellow';
+        borderColor = '#E9D100';
     } else {
-        borderColor = 'Green';
+        borderColor = '#66E900';
     };
 
     return (
