@@ -7,17 +7,11 @@ import './app.css';
 import { Provider } from '../context';
 
 import Section from '../section/section';
-import MoviesData from '../../services/movies-data';
-import SessionData from '../../services/session-data';
-import RateMovie from '../../services/rate-movie';
+import MovieApi from '../../services/movie-api';
 
 export default class App extends Component {
 
-    dataMovies = new MoviesData();
-
-    sessionData = new SessionData();
-
-    rateMovie = new RateMovie();
+    movieApi = new MovieApi();
 
     state = {
         request: null,
@@ -35,13 +29,13 @@ export default class App extends Component {
 
     async componentDidMount() {   
         
-        if (!this.sessionData.sessionId) {
+        if (!this.movieApi.sessionId) {
             const id = await this.getId();
             this.setState({
                 sessionId: id
             })
         };
-        this.dataMovies.getGenres()
+        this.movieApi.getGenres()
         .then(res => {
             this.setState({
                 genres: res.genres
@@ -61,13 +55,13 @@ export default class App extends Component {
 
             if(tab === 1) {
                 if(request) {
-                    const func = this.dataMovies.getMovies(currentPage, prevState.request, request);
+                    const func = this.movieApi.getMovies(currentPage, prevState.request, request);
                     this.searchMovies(func);
                 } else {
                     this.handleEmptyRequest();
                 }
             } else if(tab === 2) {
-                const func = this.rateMovie.getRateMovies(sessionId)
+                const func = this.movieApi.getRateMovies(sessionId)
                 this.searchMovies(func);
 
             };
@@ -80,7 +74,7 @@ export default class App extends Component {
     }
 
     async getId() {
-        const result = await this.sessionData.getSessionId();
+        const result = await this.movieApi.getSessionId();
         return result;
     }
 
