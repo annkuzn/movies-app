@@ -6,7 +6,7 @@ import './app.css';
 
 import { Provider } from '../context';
 
-import Tab from '../tab/tab';
+import Section from '../section/section';
 import MoviesData from '../../services/movies-data';
 import SessionData from '../../services/session-data';
 import RateMovie from '../../services/rate-movie';
@@ -155,38 +155,27 @@ export default class App extends Component {
     render () {
 
         const { data, loading, error, currentPage, totalPages, genres, tab, sessionId} = this.state;
-        
+        const className = tab === 1 ? "Search" : "Rated";
         const { TabPane } = Tabs;
         
         return (
             <Provider value={genres}>
                 <Tabs defaultActiveKey="1" centered onTabClick={this.tabClickHandler}>
-                    <TabPane tab="Search" key="1" >
-                        <Tab 
-                            tab={tab} 
-                            data={data}
-                            error={error}
-                            loading={loading}
-                            sessionId = {sessionId}
-                            currentPage={currentPage}
-                            totalPages={totalPages}
-                            updateRequest={this.updateRequest}
-                            paginationChangeHandler={this.paginationChangeHandler}
-                        />
-                    </TabPane>
-                    <TabPane tab="Rated" key="2" >
-                        <Tab 
-                            tab={tab} 
-                            data={data}
-                            error={error}
-                            loading={loading}
-                            sessionId = {sessionId}
-                            currentPage={currentPage}
-                            totalPages={totalPages}
-                            paginationChangeHandler={this.paginationChangeHandler}                       
-                        />
-                    </TabPane>
+                    <TabPane tab="Search" key="1" />
+                    <TabPane tab="Rated" key="2" />
                 </Tabs>
+                <Section 
+                    className={className}
+                    tab={tab} 
+                    data={data}
+                    error={error}
+                    loading={loading}
+                    sessionId={sessionId}
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    updateRequest={this.updateRequest}
+                    paginationChangeHandler={this.paginationChangeHandler}
+                />
             </Provider>
         );
     };
