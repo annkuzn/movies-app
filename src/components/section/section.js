@@ -7,7 +7,7 @@ import Movie from '../movie/movie';
 
 import 'antd/dist/antd.css';
 
-const Tab = ({data, loading, error, currentPage, totalPages, tab, sessionId, paginationChangeHandler, updateRequest}) => {
+const Section = ({className, data, loading, error, currentPage, totalPages, tab, sessionId, paginationChangeHandler, updateRequest}) => {
 
     const updateRequestDebounce = debounce(updateRequest, 700);
 
@@ -59,19 +59,20 @@ const Tab = ({data, loading, error, currentPage, totalPages, tab, sessionId, pag
     const pagination = ((content !== list) || tab === 2) ? null : paginationComp;
 
     return (
-        <>
+        <section className={className}>
             {inputRender}
             {content}
             <div className='movies__pagination'>{pagination}</div>
-        </>
+        </section>
     )
                 
 
 }
 
-export default Tab;
+export default Section;
 
-Tab.defaultProps = {
+Section.defaultProps = {
+    className: 'search',
     data: null,
     loading: true,
     error: false,
@@ -83,7 +84,8 @@ Tab.defaultProps = {
     paginationChangeHandler: (() => {})
 }
 
-Tab.propTypes = {
+Section.propTypes = {
+    className: PropTypes.string,
     data: PropTypes.arrayOf(PropTypes.object),
     loading: PropTypes.bool,
     error: PropTypes.oneOfType([
