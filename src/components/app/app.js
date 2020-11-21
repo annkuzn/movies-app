@@ -6,18 +6,12 @@ import './app.css';
 
 import { Provider } from '../context';
 
-import Tab from '../tab/tab';
-import MoviesData from '../../services/movies-data';
-import SessionData from '../../services/session-data';
-import RateMovie from '../../services/rate-movie';
+import Section from '../section/section';
+import MovieApi from '../../services/movie-api';
 
 export default class App extends Component {
 
-    dataMovies = new MoviesData();
-
-    sessionData = new SessionData();
-
-    rateMovie = new RateMovie();
+    movieApi = new MovieApi();
 
     state = {
         request: null,
@@ -35,13 +29,13 @@ export default class App extends Component {
 
     async componentDidMount() {   
         
-        if (!this.sessionData.sessionId) {
+        if (!this.movieApi.sessionId) {
             const id = await this.getId();
             this.setState({
                 sessionId: id
             })
         };
-        this.dataMovies.getGenres()
+        this.movieApi.getGenres()
         .then(res => {
             this.setState({
                 genres: res.genres
@@ -61,13 +55,13 @@ export default class App extends Component {
 
             if(tab === 1) {
                 if(request) {
-                    const func = this.dataMovies.getMovies(currentPage, prevState.request, request);
+                    const func = this.movieApi.getMovies(currentPage, prevState.request, request);
                     this.searchMovies(func);
                 } else {
                     this.handleEmptyRequest();
                 }
             } else if(tab === 2) {
-                const func = this.rateMovie.getRateMovies(sessionId)
+                const func = this.movieApi.getRateMovies(sessionId)
                 this.searchMovies(func);
 
             };
@@ -80,7 +74,7 @@ export default class App extends Component {
     }
 
     async getId() {
-        const result = await this.sessionData.getSessionId();
+        const result = await this.movieApi.getSessionId();
         return result;
     }
 
@@ -155,38 +149,27 @@ export default class App extends Component {
     render () {
 
         const { data, loading, error, currentPage, totalPages, genres, tab, sessionId} = this.state;
-        
+        const className = tab === 1 ? "Search" : "Rated";
         const { TabPane } = Tabs;
         
         return (
             <Provider value={genres}>
                 <Tabs defaultActiveKey="1" centered onTabClick={this.tabClickHandler}>
-                    <TabPane tab="Search" key="1" >
-                        <Tab 
-                            tab={tab} 
-                            data={data}
-                            error={error}
-                            loading={loading}
-                            sessionId = {sessionId}
-                            currentPage={currentPage}
-                            totalPages={totalPages}
-                            updateRequest={this.updateRequest}
-                            paginationChangeHandler={this.paginationChangeHandler}
-                        />
-                    </TabPane>
-                    <TabPane tab="Rated" key="2" >
-                        <Tab 
-                            tab={tab} 
-                            data={data}
-                            error={error}
-                            loading={loading}
-                            sessionId = {sessionId}
-                            currentPage={currentPage}
-                            totalPages={totalPages}
-                            paginationChangeHandler={this.paginationChangeHandler}                       
-                        />
-                    </TabPane>
+                    <TabPane tab="Search" key="1" />
+                    <TabPane tab="Rated" key="2" />
                 </Tabs>
+                <Section 
+                    className={className}
+                    tab={tab} 
+                    data={data}
+                    error={error}
+                    loading={loading}
+                    sessionId={sessionId}
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    updateRequest={this.updateRequest}
+                    paginationChangeHandler={this.paginationChangeHandler}
+                />
             </Provider>
         );
     };
