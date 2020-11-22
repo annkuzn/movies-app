@@ -4,7 +4,7 @@ import { Tabs } from 'antd';
 import 'antd/dist/antd.css';
 import './app.css';
 
-import { Provider } from '../context';
+import { Provider } from '../../context';
 
 import Section from '../section/section';
 import MovieApi from '../../services/movie-api';
@@ -48,10 +48,6 @@ export default class App extends Component {
         if(prevState.tab !== tab || prevState.request !== request || prevState.currentPage !== currentPage) {
 
             this.changeLoading();
-
-            if(prevState.tab !== tab) {
-                this.removeRequest();
-            }
 
             if(tab === 1) {
                 if(request) {

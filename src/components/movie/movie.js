@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { Component, PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { format } from 'date-fns';
 import { Rate, Skeleton } from 'antd';
@@ -6,12 +6,10 @@ import { Rate, Skeleton } from 'antd';
 import 'antd/dist/antd.css';
 import './movie.css';
 
-import MovieOverview from '../movie-overview/movie-overview';
-import RateMovie from '../../services/rate-movie';
-import Genres from '../genres/genres';
-import VoteAverage from '../vote-average/vote-average';
+import { Consumer } from '../../context';
 
-import SessionData from '../../services/session-data';
+import MovieApi from '../../services/movie-api';
+
 
 export default class Movie  extends PureComponent {
 
@@ -32,9 +30,7 @@ export default class Movie  extends PureComponent {
         ind: PropTypes.number
     };
 
-    rate = new RateMovie();
-
-    sessionData = new SessionData ();
+    movieApi = new MovieApi ();
 
     state = {
         title: null,
@@ -82,7 +78,7 @@ export default class Movie  extends PureComponent {
         const { id } = this.state;
         const { sessionId } = this.props;
                 
-        this.rate.postRateMovie(id, event, sessionId);
+        this.movieApi.postRateMovie(id, event, sessionId);
 
         this.setState({
             rateValue: event,
@@ -116,4 +112,147 @@ export default class Movie  extends PureComponent {
             </>
         );
     };
+};
+
+const Genres = ({ genresIds}) => {
+
+    return (
+        <Consumer>
+            {genres => {
+                    const movieGenres = genresIds ? genres.filter(genre => {
+                        let result = false;
+                        genresIds.forEach(item => {
+                            if (genre.id === item) {
+                                result = true;
+                            };
+                        });
+
+                        return result;
+                    }) : null;
+
+                    let key = 0;
+                    
+                    const currentGenres = movieGenres ? movieGenres.map( item => {
+                        key += 1;
+
+                        return (
+                            <li key={key} className='movie__genre'>{item.name}</li>
+                        )
+                    }) : null;
+
+                    return (
+                        <div className='movie__genresList-block'>
+                            <ul className='movie__genres-list'>
+                                {currentGenres}
+                            </ul>
+                        </div>
+                    );
+                }}
+        </Consumer>
+    ); 
+};
+
+class MovieOverview extends Component{
+
+    static defaultProps = {
+        overview: null,
+        ind: 0
+    };
+    
+    static propTypes = {
+        overview: PropTypes.string,
+        ind: PropTypes.number
+    };
+
+    state = {
+        overview: null
+    };
+
+    componentDidMount() {
+        this.updateDescr();
+    };
+
+    componentDidUpdate(prevProps) {
+        const { overview } = this.props;
+
+        if(prevProps.overview !== overview) {
+            this.updateDescr();
+        };
+    };
+
+    cutDescr = (overview) => {
+        const { ind } = this.props;
+        const titles = document.querySelectorAll('.movie__name');
+
+        const lineHeight = 31;
+        const currentTitle = titles[ind-1];
+        const numberOfTitleLines = currentTitle.clientHeight / lineHeight
+
+        let result = overview;
+
+        const maxLengthOverview = 300;
+        const numberHiddenSymbols = 80; // number of hidden overviews characters with one titles line
+
+        const length = maxLengthOverview - numberOfTitleLines * numberHiddenSymbols;
+
+        if (overview.length > length) {
+            const newDescr = overview.substr(0, length);
+            const index = newDescr.lastIndexOf(' ');
+
+            result = `${newDescr.substr(0, index)}...`;
+        };
+
+        return result;
+    };
+
+    updateDescr = () => {
+        const { overview } = this.props;
+
+        this.setState({
+            overview: overview ? this.cutDescr(overview) : null
+        });
+    };
+ 
+    render() {
+        const { overview } = this.state;
+
+        return <p className='movie__descr'>{overview}</p>;
+    };
+};
+
+Genres.defaultProps = {
+    genresIds: null
+};
+
+Genres.propTypes = {
+    genresIds: PropTypes.arrayOf(PropTypes.number)
+};
+
+const VoteAverage = ({ voteAverage }) => {
+
+    let borderColor;
+
+    if(voteAverage < 3) {
+        borderColor = '#E90000';
+    } else if (voteAverage < 5) {
+        borderColor = '#E97E00';
+    } else if (voteAverage < 7) {
+        borderColor = '#E9D100';
+    } else {
+        borderColor = '#66E900';
+    };
+
+    return (
+        <div className='movie__voteAverage' style={{ border: `2px solid ${borderColor}`}}>
+            <span>{voteAverage}</span>
+        </div>
+    );
+};
+
+VoteAverage.defaultProps = {
+    voteAverage: 0
+};
+
+VoteAverage.propTypes = {
+    voteAverage: PropTypes.number
 };
