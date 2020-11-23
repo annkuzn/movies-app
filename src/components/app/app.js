@@ -49,14 +49,15 @@ export default class App extends Component {
         const { request, currentPage, tab, sessionId } = this.state;
 
         if (prevState.tab !== tab || prevState.request !== request || prevState.currentPage !== currentPage) {
-            this.changeLoading();
+            this.changeLoading(true);
 
             if (tab === 1) {
+
                 if (request) {
                     const func = this.movieApi.getMovies(currentPage, prevState.request, request);
                     this.searchMovies(func);
                 } else {
-                    this.handleEmptyRequest();
+                    this.changeLoading(false);
                 }
             } else if (tab === 2) {
                 const func = this.movieApi.getRateMovies(sessionId)
@@ -76,23 +77,15 @@ export default class App extends Component {
         return result;
     }
 
-    handleEmptyRequest = () => {
-        this.setState({
-            error: false,
-            loading: false,
-            data: null
-        })
-    }
-
     removeRequest = () => {
         this.setState({
             request: null
         })
     }
 
-    changeLoading = () => {
+    changeLoading = (load) => {
         this.setState({
-            loading: true
+            loading: load
         })
     }
 
@@ -127,7 +120,7 @@ export default class App extends Component {
 
     updateRequest = (newRequest) => {
         this.setState({
-            request: newRequest.target.value
+            request: newRequest.target.value.trim()
         });
     };
 
