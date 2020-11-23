@@ -95,13 +95,14 @@ export default class App extends Component {
     }
 
     searchMovies = (func) => {
-        func.then(([movies, pages, curPage])=> {
+        const { currentPage } = this.state;
+        func.then(([ movies, pages, curPage ])=> {
             this.setState({
                 data: movies,
                 loading: false,
                 error: false,
                 totalPages: pages,
-                currentPage: curPage
+                currentPage: curPage || currentPage
             });
         })
         .catch((err) => {this.onError(err.message)}); 
@@ -129,7 +130,6 @@ export default class App extends Component {
     updateSearchTab = (tabKey) => {
         this.setState({
             tab: +tabKey,
-            currentPage: 1,
             loading: true,
         });
     };
