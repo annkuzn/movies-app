@@ -30,7 +30,7 @@ const Section = ({className, data, loading, error, currentPage, totalPages, tab,
                         />
 
     let key = 0;                  
-    const movies = data ? data.map((movie) => {
+    const movies = data.length ? data.map((movie) => {
         key += 1;
         return (
             <li key={key.toString()} className='movie'><Movie movie={movie} sessionId = {sessionId} ind={key}/></li>
@@ -56,7 +56,7 @@ const Section = ({className, data, loading, error, currentPage, totalPages, tab,
 
     const content = (error || !loading && !data) ? message : contentWithoutError;
 
-    const pagination = ((content !== list) || tab === 2) ? null : paginationComp;
+    const pagination = ( !data.length || tab === 2) ? null : paginationComp;
 
     return (
         <section className={className}>

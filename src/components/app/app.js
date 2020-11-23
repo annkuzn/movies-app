@@ -15,7 +15,7 @@ export default class App extends Component {
 
     state = {
         request: null,
-        data: null,
+        data: [],
         currentPage: 1,
         loading: false,
         error: false,
