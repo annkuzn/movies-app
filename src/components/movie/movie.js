@@ -9,6 +9,7 @@ import './movie.css';
 import { Consumer } from '../../context';
 
 import MovieApi from '../../services/movie-api';
+import { cutDescr, setRatingColor } from './helpers';
 
 
 export default class Movie  extends PureComponent {
@@ -154,36 +155,11 @@ class MovieOverview extends Component{
         };
     };
 
-    cutDescr = (overview) => {
-        const { ind } = this.props;
-        const titles = document.querySelectorAll('.movie__name');
-
-        const lineHeight = 31;
-        const currentTitle = titles[ind-1];
-        const numberOfTitleLines = currentTitle.clientHeight / lineHeight
-
-        let result = overview;
-
-        const maxLengthOverview = 300;
-        const numberHiddenSymbols = 80; // number of hidden overviews characters with one titles line
-
-        const length = maxLengthOverview - numberOfTitleLines * numberHiddenSymbols;
-
-        if (overview.length > length) {
-            const newDescr = overview.substr(0, length);
-            const index = newDescr.lastIndexOf(' ');
-
-            result = `${newDescr.substr(0, index)}...`;
-        };
-
-        return result;
-    };
-
     updateDescr = () => {
-        const { overview } = this.props;
+        const { overview, ind } = this.props;
 
         this.setState({
-            overview: overview ? this.cutDescr(overview) : null
+            overview: overview ? cutDescr(overview, ind) : null
         });
     };
  
@@ -203,21 +179,8 @@ Genres.propTypes = {
 };
 
 const VoteAverage = ({ voteAverage }) => {
-
-    let borderColor;
-
-    if(voteAverage < 3) {
-        borderColor = '#E90000';
-    } else if (voteAverage < 5) {
-        borderColor = '#E97E00';
-    } else if (voteAverage < 7) {
-        borderColor = '#E9D100';
-    } else {
-        borderColor = '#66E900';
-    };
-
     return (
-        <div className='movie__voteAverage' style={{ border: `2px solid ${borderColor}`}}>
+        <div className='movie__voteAverage' style={{ border: `2px solid ${setRatingColor(voteAverage)}`}}>
             <span>{voteAverage}</span>
         </div>
     );
