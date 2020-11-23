@@ -31,10 +31,12 @@ export default class App extends Component {
         
         if (!this.movieApi.sessionId) {
             const id = await this.getId();
+
             this.setState({
                 sessionId: id
-            })
+            });
         };
+
         this.movieApi.getGenres()
         .then(res => {
             this.setState({
@@ -44,19 +46,19 @@ export default class App extends Component {
     };
 
     componentDidUpdate(prevProp, prevState) {
-        const { request, currentPage, tab, sessionId} = this.state;
-        if(prevState.tab !== tab || prevState.request !== request || prevState.currentPage !== currentPage) {
+        const { request, currentPage, tab, sessionId } = this.state;
 
+        if (prevState.tab !== tab || prevState.request !== request || prevState.currentPage !== currentPage) {
             this.changeLoading();
 
-            if(tab === 1) {
-                if(request) {
+            if (tab === 1) {
+                if (request) {
                     const func = this.movieApi.getMovies(currentPage, prevState.request, request);
                     this.searchMovies(func);
                 } else {
                     this.handleEmptyRequest();
                 }
-            } else if(tab === 2) {
+            } else if (tab === 2) {
                 const func = this.movieApi.getRateMovies(sessionId)
                 this.searchMovies(func);
 
@@ -96,7 +98,9 @@ export default class App extends Component {
 
     searchMovies = (func) => {
         const { currentPage } = this.state;
+
         func.then(([ movies, pages, curPage ])=> {
+
             this.setState({
                 data: movies,
                 loading: false,
