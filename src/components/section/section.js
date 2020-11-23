@@ -1,13 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Input, Spin, Alert, Pagination } from 'antd';
 import debounce from 'lodash.debounce';
 
 import Movie from '../movie/movie';
 
 import 'antd/dist/antd.css';
 
-const Section = ({className, data, loading, error, currentPage, totalPages, tab, sessionId, paginationChangeHandler, pushRatedMovie, updateRequest}) => {
+const Section = ({Input, Spin, Alert, Pagination, className, data, loading, error, currentPage, totalPages, tab, sessionId, paginationChangeHandler, pushRatedMovie, updateRequest}) => {
 
     const updateRequestDebounce = debounce(updateRequest, 700);
 
@@ -41,11 +40,12 @@ const Section = ({className, data, loading, error, currentPage, totalPages, tab,
                     {movies}
                     </ul> : null;
 
-    const paginationComp =  <Pagination total={totalPages}
-                                        defaultPageSize={20}
-                                        current={currentPage}
-                                        showSizeChanger={false}
-                                        onChange={paginationChangeHandler}
+    const paginationComp =  <Pagination 
+                                total={totalPages}
+                                defaultPageSize={20}
+                                current={currentPage}
+                                showSizeChanger={false}
+                                onChange={paginationChangeHandler}
                             />;
 
     const inputRender = tab === 1 ? input : null;
@@ -56,7 +56,7 @@ const Section = ({className, data, loading, error, currentPage, totalPages, tab,
 
     const content = (error || (!loading && !movies)) ? message : contentWithoutError;
 
-    const pagination = ( !data.length || tab === 2) ? null : paginationComp;
+    const pagination = (!data.length || tab === 2 || loading) ? null : paginationComp;
 
     return (
         <section className={className}>
@@ -82,10 +82,18 @@ Section.defaultProps = {
     pushRatedMovie: (() => {}),
     updateRequest: (() => {}),
     tab: 1,
-    paginationChangeHandler: (() => {})
-}
+    paginationChangeHandler: (() => {}),
+    Input: null,
+    Spin: null,
+    Alert: null,
+    Pagination: null,
+    }
 
 Section.propTypes = {
+    Input: PropTypes.element,
+    Spin: PropTypes.element,
+    Alert: PropTypes.element,
+    Pagination: PropTypes.element,
     className: PropTypes.string,
     data: PropTypes.arrayOf(PropTypes.object),
     loading: PropTypes.bool,

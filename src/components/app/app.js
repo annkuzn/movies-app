@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Tabs } from 'antd';
+import { Tabs, Input, Spin, Alert, Pagination } from 'antd';
 
 import 'antd/dist/antd.css';
 import './app.css';
@@ -170,6 +170,10 @@ export default class App extends Component {
                     sessionId={sessionId}
                     currentPage={currentPage}
                     totalPages={totalPages}
+                    Input={Input}
+                    Spin={Spin}
+                    Alert={Alert}
+                    Pagination={Pagination}
                     updateRequest={this.updateRequest}
                     pushRatedMovie={this.pushRatedMovie}
                     paginationChangeHandler={this.paginationChangeHandler}
