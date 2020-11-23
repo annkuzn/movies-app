@@ -33,39 +33,15 @@ export default class Movie  extends PureComponent {
     movieApi = new MovieApi ();
 
     state = {
-        title: null,
-        overview: null,
-        date: null,
-        poster: null,
         rateValue: 0,
-        voteAverage: 0,
-        genresIds: null
     };
 
     componentDidMount() {
-        this.createMovieCard();
-    };
-
-    componentDidUpdate(prevProp) {
-        const { movie } = this.props;
-
-        if(prevProp.movie !== movie) {
-            this.createMovieCard();
-        };
-    };
-
-    createMovieCard = () => {
         const { movie } = this.props;
 
         this.setState({
-            rateValue: movie.rating ? movie.rating : 0,
-            voteAverage: movie.vote_average ? +movie.vote_average : 0,
-            title: movie.title,
-            overview: movie.overview,
-            date: movie.release_date ? format(new Date(movie.release_date), 'LLLL d, y') : null,
-            poster: movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : null,
-            genresIds: movie.genre_ids
-        });
+            rateValue: movie.rating ? movie.rating : 0
+        })
     };
 
     rateChangeHandler = (event) => {
@@ -85,14 +61,14 @@ export default class Movie  extends PureComponent {
 
     render() {
         
-        const { title, overview, date, poster, rateValue, voteAverage, genresIds } = this.state;
-        const { ind } = this.props;
-
+        const { rateValue } = this.state;
+        const { ind, movie } = this.props;
+        const { title, overview, release_date: releaseDate, poster_path: posterPath, vote_average: voteAverage, genre_ids: genreIds } = movie;
         const imageSkeleton = <Skeleton.Image className='movie__img'/>
 
-        const img = <img className='movie__img' src={poster} alt={title} />
+        const img = <img className='movie__img' src={`https://image.tmdb.org/t/p/w500${posterPath}`} alt={title} />
         
-        const image = poster ? img : imageSkeleton;
+        const image = img || imageSkeleton;
 
         return (
             <>
@@ -101,11 +77,11 @@ export default class Movie  extends PureComponent {
                 </div>
                 <div className='movie__details'>
                     <h1 className='movie__name'>{title}</h1>
-                    <span className='movie__date'>{date}</span>
-                    <Genres genresIds={genresIds}/>
+                    <span className='movie__date'>{format(new Date(releaseDate), 'LLLL d, y') || null}</span>
+                    <Genres genresIds={genreIds}/>
                 </div>
                 <MovieOverview overview={overview} ind={ind} />
-                <VoteAverage voteAverage={voteAverage}/>
+                <VoteAverage voteAverage={+voteAverage || null}/>
                 <Rate className='movie__rate' count={10} value={rateValue} onChange={this.rateChangeHandler}/>
             </>
         );
