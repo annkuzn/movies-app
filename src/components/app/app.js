@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Tabs, Input, Spin, Alert, Pagination } from 'antd';
+import { Tabs, Spin, Alert} from 'antd';
 
 import 'antd/dist/antd.css';
 import './app.css';
@@ -7,6 +7,8 @@ import './app.css';
 import { Provider } from '../../context';
 
 import Section from '../section/section';
+import Pagination from '../pagination/pagination';
+import SearchInput from '../searchInput/searchInput';
 import MovieApi from '../../services/movie-api';
 
 export default class App extends Component {
@@ -71,24 +73,23 @@ export default class App extends Component {
 
     componentDidCatch(err){
         this.onError(err.message);
-    }
+    };
 
-    async getId() {
-        const result = await this.movieApi.getSessionId();
-        return result;
-    }
+    getId() {
+        return this.movieApi.getSessionId();
+    };
 
     removeRequest = () => {
         this.setState({
             request: null
-        })
-    }
+        });
+    };
 
     changeLoading = (load) => {
         this.setState({
             loading: load
-        })
-    }
+        });
+    };
 
     searchMovies = (func) => {
         const { currentPage } = this.state;
@@ -127,11 +128,22 @@ export default class App extends Component {
 
     pushRatedMovie = (movie) => {
         const { ratedMovies } = this.state;
+        let newMovie = true;
+
+        const newArr = ratedMovies.map(mov => {
+
+            if (mov.id === movie.id) {
+                newMovie = false;
+                return {...mov, rating: movie.rating};
+            }
+
+            return mov;
+        })
 
         this.setState({
-            ratedMovies: [...ratedMovies, movie]
+            ratedMovies: newMovie ? [...newArr, movie] : [...newArr]
         });
-    }
+    };
 
     updateSearchTab = (tabKey) => {
         this.setState({
@@ -146,14 +158,45 @@ export default class App extends Component {
 
     paginationChangeHandler = (page) => {
         this.changePage(page);
-    }
+    };
 
     render () {
 
-        const { searchMovies, ratedMovies, loading, error, currentPage, totalPages, genres, tab, sessionId} = this.state;
+        const { searchMovies, ratedMovies, loading, error, currentPage, totalPages, genres, tab, sessionId } = this.state;
         const className = tab === 1 ? "Search" : "Rated";
         const { TabPane } = Tabs;
         const data = tab === 1 ? searchMovies : ratedMovies;
+
+        const searchInput = <SearchInput updateRequest={this.updateRequest} />;
+
+        const paginationSearchMovies = <Pagination
+                                            defaultPageSize={20}
+                                            totalPages={totalPages}
+                                            currentPage={currentPage}
+                                            paginationChangeHandler={this.paginationChangeHandler}
+                                        />
+        
+        const spinner = <div className="spin">
+                            <Spin size='large' />
+                        </div>;
+                
+        const errorMessage = <Alert
+                                message="Ошибка"
+                                description={error}
+                                type="error"
+                             />;
+
+        const infoMessage = <Alert 
+                                className="infoMessage"
+                                message="Введите запрос"
+                                type="info"
+                            />
+
+        const message = error ? errorMessage : infoMessage;
+
+        const input = tab === 1 ? searchInput : null;
+
+        const pagination = (!data.length || tab === 2 || loading) ? null : paginationSearchMovies;
 
         return (
             <Provider value={genres}>
@@ -162,21 +205,16 @@ export default class App extends Component {
                     <TabPane tab="Rated" key="2" />
                 </Tabs>
                 <Section 
-                    className={className}
-                    tab={tab} 
                     data={data}
                     error={error}
+                    input={input}
                     loading={loading}
+                    spinner={spinner}
+                    message={message}
                     sessionId={sessionId}
-                    currentPage={currentPage}
-                    totalPages={totalPages}
-                    Input={Input}
-                    Spin={Spin}
-                    Alert={Alert}
-                    Pagination={Pagination}
-                    updateRequest={this.updateRequest}
+                    className={className}
+                    pagination={pagination}
                     pushRatedMovie={this.pushRatedMovie}
-                    paginationChangeHandler={this.paginationChangeHandler}
                 />
             </Provider>
         );
