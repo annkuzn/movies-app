@@ -38,32 +38,6 @@ export default class MovieApi {
         return this.getResource('genre/movie/list', 'language=en-US');
     };
 
-    postRateMovie (movieId, rateValue, sessionId) {
-
-        const options = {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json;charset=utf-8',
-            },
-            body: JSON.stringify({"value": rateValue })
-        }
-
-        return this.getResource(`movie/${movieId}/rating`, `guest_session_id=${sessionId}`, options);
-    };
-
-    getRateMovies (sessionId) {
-        return this.getResource(`guest_session/${sessionId}/rated/movies`, 'language=en-US&sort_by=created_at.asc')
-        .then(res => {
-            const moviesArr = res.results;
-
-            if (!moviesArr.length) {
-                throw new Error(`Пока нет оцененных фильмов`);
-            }
-
-            return [moviesArr];
-        })
-    };
-
     getRateMovie(movieId, sessionId) {
         return this.getResource(`movie/${movieId}/account_states`, `guest_session_id=${sessionId}`);
     };

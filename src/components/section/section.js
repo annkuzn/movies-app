@@ -7,7 +7,7 @@ import Movie from '../movie/movie';
 
 import 'antd/dist/antd.css';
 
-const Section = ({className, data, loading, error, currentPage, totalPages, tab, sessionId, paginationChangeHandler, updateRequest}) => {
+const Section = ({className, data, loading, error, currentPage, totalPages, tab, sessionId, paginationChangeHandler, pushRatedMovie, updateRequest}) => {
 
     const updateRequestDebounce = debounce(updateRequest, 700);
 
@@ -33,7 +33,7 @@ const Section = ({className, data, loading, error, currentPage, totalPages, tab,
     const movies = data.length ? data.map((movie) => {
         key += 1;
         return (
-            <li key={key.toString()} className='movie'><Movie movie={movie} sessionId = {sessionId} ind={key}/></li>
+            <li key={key.toString()} className='movie'><Movie movie={movie} sessionId={sessionId} ind={key} pushRatedMovie={pushRatedMovie}/></li>
         )
     }) : null;
 
@@ -54,7 +54,7 @@ const Section = ({className, data, loading, error, currentPage, totalPages, tab,
 
     const message = error ? errorMessage : infoMessage;
 
-    const content = (error || !loading && !data) ? message : contentWithoutError;
+    const content = (error || (!loading && !movies)) ? message : contentWithoutError;
 
     const pagination = ( !data.length || tab === 2) ? null : paginationComp;
 
@@ -79,6 +79,7 @@ Section.defaultProps = {
     currentPage: 1,
     totalPages: 1,
     sessionId: null,
+    pushRatedMovie: (() => {}),
     updateRequest: (() => {}),
     tab: 1,
     paginationChangeHandler: (() => {})
@@ -95,6 +96,7 @@ Section.propTypes = {
     currentPage: PropTypes.number,
     totalPages: PropTypes.number,
     sessionId: PropTypes.string,
+    pushRatedMovie: PropTypes.func,
     updateRequest: PropTypes.func,
     tab: PropTypes.number,
     paginationChangeHandler: PropTypes.func

@@ -15,7 +15,7 @@ export default class Movie  extends PureComponent {
 
     static defaultProps = {
         movie: [],
-        sessionId: null,
+        pushRatedMovie: (() => {}),
         ind: 0
     };
     
@@ -26,7 +26,7 @@ export default class Movie  extends PureComponent {
             PropTypes.bool,
             PropTypes.array
         ])),
-        sessionId: PropTypes.string,
+        pushRatedMovie: PropTypes.func,
         ind: PropTypes.number
     };
 
@@ -39,7 +39,6 @@ export default class Movie  extends PureComponent {
         poster: null,
         rateValue: 0,
         voteAverage: 0,
-        id: null,
         genresIds: null
     };
 
@@ -65,7 +64,6 @@ export default class Movie  extends PureComponent {
             overview: movie.overview,
             date: movie.release_date ? format(new Date(movie.release_date), 'LLLL d, y') : null,
             poster: movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : null,
-            id: movie.id,
             genresIds: movie.genre_ids
         });
     };
@@ -75,14 +73,14 @@ export default class Movie  extends PureComponent {
     };
 
     changeRateValue = (event) => {
-        const { id } = this.state;
-        const { sessionId } = this.props;
+        const { pushRatedMovie, movie } = this.props;
                 
-        this.movieApi.postRateMovie(id, event, sessionId);
-
         this.setState({
             rateValue: event,
         });
+
+        const ratedMovie = {...movie, rating: event};
+        pushRatedMovie(ratedMovie);
     };
 
     render() {

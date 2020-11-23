@@ -15,7 +15,8 @@ export default class App extends Component {
 
     state = {
         request: null,
-        data: [],
+        searchMovies: [],
+        ratedMovies: [],
         currentPage: 1,
         loading: false,
         error: false,
@@ -46,7 +47,7 @@ export default class App extends Component {
     };
 
     componentDidUpdate(prevProp, prevState) {
-        const { request, currentPage, tab, sessionId } = this.state;
+        const { request, currentPage, tab, ratedMovies } = this.state;
 
         if (prevState.tab !== tab || prevState.request !== request || prevState.currentPage !== currentPage) {
             this.changeLoading(true);
@@ -58,11 +59,11 @@ export default class App extends Component {
                     this.searchMovies(func);
                 } else {
                     this.changeLoading(false);
+                    this.onError(false);
                 }
             } else if (tab === 2) {
-                const func = this.movieApi.getRateMovies(sessionId)
-                this.searchMovies(func);
-
+                this.changeLoading(false);
+                if (!ratedMovies.length) this.onError('Пока нет оцененных фильмов');
             };
             
         };
@@ -95,7 +96,7 @@ export default class App extends Component {
         func.then(([ movies, pages, curPage ])=> {
 
             this.setState({
-                data: movies,
+                searchMovies: movies,
                 loading: false,
                 error: false,
                 totalPages: pages,
@@ -124,6 +125,14 @@ export default class App extends Component {
         });
     };
 
+    pushRatedMovie = (movie) => {
+        const { ratedMovies } = this.state;
+
+        this.setState({
+            ratedMovies: [...ratedMovies, movie]
+        });
+    }
+
     updateSearchTab = (tabKey) => {
         this.setState({
             tab: +tabKey,
@@ -141,10 +150,11 @@ export default class App extends Component {
 
     render () {
 
-        const { data, loading, error, currentPage, totalPages, genres, tab, sessionId} = this.state;
+        const { searchMovies, ratedMovies, loading, error, currentPage, totalPages, genres, tab, sessionId} = this.state;
         const className = tab === 1 ? "Search" : "Rated";
         const { TabPane } = Tabs;
-        
+        const data = tab === 1 ? searchMovies : ratedMovies;
+
         return (
             <Provider value={genres}>
                 <Tabs defaultActiveKey="1" centered onTabClick={this.tabClickHandler}>
@@ -161,6 +171,7 @@ export default class App extends Component {
                     currentPage={currentPage}
                     totalPages={totalPages}
                     updateRequest={this.updateRequest}
+                    pushRatedMovie={this.pushRatedMovie}
                     paginationChangeHandler={this.paginationChangeHandler}
                 />
             </Provider>
