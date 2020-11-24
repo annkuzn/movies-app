@@ -68,8 +68,9 @@ export default class Movie  extends PureComponent {
         const imageSkeleton = <Skeleton.Image className='movie__img'/>
 
         const img = <img className='movie__img' src={`https://image.tmdb.org/t/p/w500${posterPath}`} alt={title} />
-        
-        const image = img || imageSkeleton;
+        const image = posterPath ? img : imageSkeleton;
+
+        const date = releaseDate ? format(new Date(releaseDate), 'LLLL d, y') : null;
 
         return (
             <>
@@ -78,11 +79,11 @@ export default class Movie  extends PureComponent {
                 </div>
                 <div className='movie__details'>
                     <h1 className='movie__name'>{title}</h1>
-                    <span className='movie__date'>{format(new Date(releaseDate), 'LLLL d, y') || null}</span>
+                    <span className='movie__date'>{date}</span>
                     <Genres genresIds={genreIds}/>
                 </div>
                 <MovieOverview overview={overview} ind={ind} />
-                <VoteAverage voteAverage={+voteAverage || null}/>
+                <VoteAverage voteAverage={+voteAverage}/>
                 <Rate className='movie__rate' count={10} value={rateValue} onChange={this.rateChangeHandler}/>
             </>
         );
