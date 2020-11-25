@@ -172,18 +172,18 @@ export default class App extends Component {
                     <TabPane tab="Search" key="1" />
                     <TabPane tab="Rated" key="2" />
                 </Tabs>
+                {input}
                 <Section 
                     data={data}
                     error={error}
-                    input={input}
                     loading={loading}
                     spinner={spinner}
                     message={message}
                     className={className}
-                    pagination={pagination}
                     ratedMovies={ratedMovies}
                     pushRatedMovie={this.pushRatedMovie}
                 />
+                <div className='movies__pagination'>{pagination}</div>
             </Provider>
         );
     };

@@ -5,7 +5,7 @@ import 'antd/dist/antd.css';
 
 import Movie from '../movie/movie';
 
-const Section = ({ data, error, input, loading, spinner, message, className, pagination, ratedMovies, pushRatedMovie }) => {
+const Section = ({ data, error, loading, spinner, message, className, ratedMovies, pushRatedMovie }) => {
 
     let key = 0;
                     
@@ -33,9 +33,7 @@ const Section = ({ data, error, input, loading, spinner, message, className, pag
 
     return (
         <section className={className}>
-            {input}
             {content}
-            <div className='movies__pagination'>{pagination}</div>
         </section>
     )
 }
@@ -45,12 +43,10 @@ export default Section;
 Section.defaultProps = {
     data: null,
     error: false,
-    input: null,
     loading: true,
     spinner: null,
     message: null,
     className: 'search',
-    pagination: null,
     ratedMovies: [],
     pushRatedMovie: (() => {}),
 }
@@ -61,12 +57,10 @@ Section.propTypes = {
         PropTypes.bool,
         PropTypes.string
     ]),
-    input:PropTypes.element,
     loading: PropTypes.bool,
     spinner: PropTypes.element,
     message: PropTypes.element,
     className: PropTypes.string,
-    pagination: PropTypes.element,
     ratedMovies: PropTypes.arrayOf(PropTypes.object),
     pushRatedMovie: PropTypes.func,
 }
