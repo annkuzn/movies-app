@@ -18,28 +18,21 @@ export default class MovieApi {
     };
 
     getMovies(currentPage, prevRequest, request) {
-        return this.getResource('search/movie', `query=${request}&page=${currentPage}`)
+
+        const curPage = prevRequest === request ? currentPage : 1;
+
+        return this.getResource('search/movie', `query=${request}&page=${curPage}`)
         .then(res => {
             const moviesArr = res.results;
             if (!moviesArr.length) {
                 throw new Error(`Нет результатов по запросу "${request}"`);
             }
-            return [moviesArr, res.total_results];
-        })
-        .then(([movies, totalPages]) => {
-
-            const curPage = prevRequest === request ? currentPage : 1;
-
-            return [movies, totalPages, curPage];
-        })
+            return [moviesArr, res.total_results, curPage];
+        });
     };
 
     getGenres() {
         return this.getResource('genre/movie/list', 'language=en-US');
-    };
-
-    getRateMovie(movieId, sessionId) {
-        return this.getResource(`movie/${movieId}/account_states`, `guest_session_id=${sessionId}`);
     };
 
     getSessionId() {

@@ -5,7 +5,7 @@ import Movie from '../movie/movie';
 
 import 'antd/dist/antd.css';
 
-const Section = ({ data, error, input, loading, spinner, message, sessionId, className, pushRatedMovie, pagination }) => {
+const Section = ({ data, error, input, loading, spinner, message, className, pushRatedMovie, pagination, ratedMovies }) => {
 
     let key = 0;
                     
@@ -15,8 +15,8 @@ const Section = ({ data, error, input, loading, spinner, message, sessionId, cla
                             <li key={key.toString()} className='movie'>
                                 <Movie 
                                     movie={movie} 
-                                    sessionId={sessionId} 
                                     ind={key} 
+                                    ratedMovies={ratedMovies}
                                     pushRatedMovie={pushRatedMovie}
                                 />
                             </li>
@@ -49,9 +49,9 @@ Section.defaultProps = {
     loading: true,
     spinner: null,
     message: null,
-    sessionId: null,
     className: 'search',
     pagination: null,
+    ratedMovies: [],
     pushRatedMovie: (() => {}),
 }
 
@@ -65,8 +65,8 @@ Section.propTypes = {
     loading: PropTypes.bool,
     spinner: PropTypes.element,
     message: PropTypes.element,
-    sessionId: PropTypes.string,
     className: PropTypes.string,
     pagination: PropTypes.element,
+    ratedMovies: PropTypes.arrayOf(PropTypes.object),
     pushRatedMovie: PropTypes.func,
 }

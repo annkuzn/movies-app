@@ -17,7 +17,8 @@ export default class Movie  extends PureComponent {
     static defaultProps = {
         movie: [],
         pushRatedMovie: (() => {}),
-        ind: 0
+        ind: 0,
+        ratedMovies: []
     };
     
     static propTypes = {
@@ -28,7 +29,8 @@ export default class Movie  extends PureComponent {
             PropTypes.array
         ])),
         pushRatedMovie: PropTypes.func,
-        ind: PropTypes.number
+        ind: PropTypes.number,
+        ratedMovies: PropTypes.arrayOf(PropTypes.object)
     };
 
     movieApi = new MovieApi ();
@@ -38,11 +40,15 @@ export default class Movie  extends PureComponent {
     };
 
     componentDidMount() {
-        const { movie } = this.props;
+        const { movie, ratedMovies } = this.props;
 
-        this.setState({
-            rateValue: movie.rating ? movie.rating : 0
-        })
+        ratedMovies.forEach(item => {
+            if (movie.id === item.id) {
+                this.setState({
+                    rateValue: item.rating 
+                });
+            };
+        });
     };
 
     rateChangeHandler = (event) => {
@@ -51,7 +57,7 @@ export default class Movie  extends PureComponent {
 
     changeRateValue = (event) => {
         const { pushRatedMovie, movie } = this.props;
-                
+
         this.setState({
             rateValue: event,
         });
@@ -65,9 +71,9 @@ export default class Movie  extends PureComponent {
         const { rateValue } = this.state;
         const { ind, movie } = this.props;
         const { title, overview, release_date: releaseDate, poster_path: posterPath, vote_average: voteAverage, genre_ids: genreIds } = movie;
-        const imageSkeleton = <Skeleton.Image className='movie__img'/>
+        const imageSkeleton = <Skeleton.Image className='movie__img'/>;
 
-        const img = <img className='movie__img' src={`https://image.tmdb.org/t/p/w500${posterPath}`} alt={title} />
+        const img = <img className='movie__img' src={`https://image.tmdb.org/t/p/w500${posterPath}`} alt={title} />;
         const image = posterPath ? img : imageSkeleton;
 
         const date = releaseDate ? format(new Date(releaseDate), 'LLLL d, y') : null;
