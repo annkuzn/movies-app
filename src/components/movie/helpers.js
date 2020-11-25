@@ -22,7 +22,9 @@ const cutDescr = (overview, ind) => {
     return result;
 };
 
-const setRatingColor = (vote) => {
+const setRatingColor = (voteAverage) => {
+    const vote = +voteAverage;
+
     let borderColor;
 
     if(vote < 3) {

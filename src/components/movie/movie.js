@@ -83,14 +83,14 @@ export default class Movie  extends PureComponent {
                     <Genres genresIds={genreIds}/>
                 </div>
                 <MovieOverview overview={overview} ind={ind} />
-                <VoteAverage voteAverage={+voteAverage}/>
+                <VoteAverage voteAverage={voteAverage}/>
                 <Rate className='movie__rate' count={10} value={rateValue} onChange={this.rateChangeHandler}/>
             </>
         );
     };
 };
 
-const Genres = ({ genresIds}) => {
+const Genres = ({ genresIds }) => {
 
     return (
         <Consumer>
