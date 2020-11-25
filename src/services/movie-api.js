@@ -21,14 +21,16 @@ export default class MovieApi {
 
         const curPage = prevRequest === request ? currentPage : 1;
 
-        return this.getResource('search/movie', `query=${request}&page=${curPage}`)
-        .then(res => {
-            const moviesArr = res.results;
-            if (!moviesArr.length) {
-                throw new Error(`Нет результатов по запросу "${request}"`);
-            }
-            return [moviesArr, res.total_results, curPage];
-        });
+        return  this.getResource('search/movie', `query=${request}&page=${curPage}`)
+                .then(res => {
+                    const moviesArr = res.results;
+                    
+                    if (!moviesArr.length) {
+                        throw new Error(`Нет результатов по запросу "${request}"`);
+                    };
+
+                    return [moviesArr, res.total_results, curPage];
+                });
     };
 
     getGenres() {
@@ -36,13 +38,13 @@ export default class MovieApi {
     };
 
     getSessionId() {
-        return this.getResource('authentication/guest_session/new')
-        .then( res => {
-            return res.guest_session_id;
-        })
-        .then( id => {
-            this.sessionId = id;
-            return id;
-        });
+        return  this.getResource('authentication/guest_session/new')
+                .then( res => {
+                    return res.guest_session_id;
+                })
+                .then( id => {
+                    this.sessionId = id;
+                    return id;
+                });
     };
-}
+};

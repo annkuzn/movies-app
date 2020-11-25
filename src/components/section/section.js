@@ -1,11 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import Movie from '../movie/movie';
-
 import 'antd/dist/antd.css';
 
-const Section = ({ data, error, input, loading, spinner, message, className, pushRatedMovie, pagination, ratedMovies }) => {
+import Movie from '../movie/movie';
+
+const Section = ({ data, error, input, loading, spinner, message, className, pagination, ratedMovies, pushRatedMovie }) => {
 
     let key = 0;
                     
@@ -13,9 +13,9 @@ const Section = ({ data, error, input, loading, spinner, message, className, pus
                         key += 1;
                         return (
                             <li key={key.toString()} className='movie'>
-                                <Movie 
+                                <Movie
+                                    ind={key}
                                     movie={movie} 
-                                    ind={key} 
                                     ratedMovies={ratedMovies}
                                     pushRatedMovie={pushRatedMovie}
                                 />

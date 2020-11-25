@@ -15,22 +15,22 @@ import { cutDescr, setRatingColor } from './helpers';
 export default class Movie  extends PureComponent {
 
     static defaultProps = {
-        movie: [],
-        pushRatedMovie: (() => {}),
         ind: 0,
-        ratedMovies: []
+        movie: [],
+        ratedMovies: [],
+        pushRatedMovie: (() => {}),
     };
     
     static propTypes = {
+        ind: PropTypes.number,
         movie: PropTypes.objectOf(PropTypes.oneOfType([
             PropTypes.string,
             PropTypes.number,
             PropTypes.bool,
             PropTypes.array
         ])),
-        pushRatedMovie: PropTypes.func,
-        ind: PropTypes.number,
-        ratedMovies: PropTypes.arrayOf(PropTypes.object)
+        ratedMovies: PropTypes.arrayOf(PropTypes.object),
+        pushRatedMovie: PropTypes.func,  
     };
 
     movieApi = new MovieApi ();
@@ -44,9 +44,7 @@ export default class Movie  extends PureComponent {
 
         ratedMovies.forEach(item => {
             if (movie.id === item.id) {
-                this.setState({
-                    rateValue: item.rating 
-                });
+                this.setState({rateValue: item.rating});
             };
         });
     };
@@ -58,9 +56,7 @@ export default class Movie  extends PureComponent {
     changeRateValue = (event) => {
         const { pushRatedMovie, movie } = this.props;
 
-        this.setState({
-            rateValue: event,
-        });
+        this.setState({rateValue: event});
 
         const ratedMovie = {...movie, rating: event};
         pushRatedMovie(ratedMovie);
@@ -71,6 +67,7 @@ export default class Movie  extends PureComponent {
         const { rateValue } = this.state;
         const { ind, movie } = this.props;
         const { title, overview, release_date: releaseDate, poster_path: posterPath, vote_average: voteAverage, genre_ids: genreIds } = movie;
+        
         const imageSkeleton = <Skeleton.Image className='movie__img'/>;
 
         const img = <img className='movie__img' src={`https://image.tmdb.org/t/p/w500${posterPath}`} alt={title} />;
@@ -104,9 +101,7 @@ const Genres = ({ genresIds }) => {
                     const movieGenres = genresIds ? genres.filter(genre => {
                         let result = false;
                         genresIds.forEach(item => {
-                            if (genre.id === item) {
-                                result = true;
-                            };
+                            if (genre.id === item) result = true;
                         });
 
                         return result;
@@ -165,9 +160,7 @@ class MovieOverview extends Component{
     updateDescr = () => {
         const { overview, ind } = this.props;
 
-        this.setState({
-            overview: overview ? cutDescr(overview, ind) : null
-        });
+        this.setState({overview: overview ? cutDescr(overview, ind) : null});
     };
  
     render() {

@@ -5,15 +5,15 @@ import { Pagination as PaginationAntd } from 'antd';
 
 const Pagination = ({ totalPages, currentPage, paginationChangeHandler, defaultPageSize }) => {
     return (
-        <PaginationAntd 
+        <PaginationAntd
             total={totalPages}
-            defaultPageSize={defaultPageSize}
             current={currentPage}
             showSizeChanger={false}
+            defaultPageSize={defaultPageSize}
             onChange={paginationChangeHandler}
         />
-    )
-}
+    );
+};
 
 export default Pagination;
 
@@ -29,4 +29,4 @@ Pagination.propTypes = {
     currentPage: PropTypes.number,
     defaultPageSize: PropTypes.number,
     paginationChangeHandler: PropTypes.func,
-}
+};
