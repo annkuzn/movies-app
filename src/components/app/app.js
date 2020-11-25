@@ -44,13 +44,14 @@ export default class App extends Component {
             this.changeLoading(true);
 
             if (tab === 1) {
+                this.onError(false);
+
                 if (request) {
                     const func = this.movieApi.getMovies(currentPage, prevState.request, request);
 
                     this.searchMovies(func);
                 } else {
                     this.changeLoading(false);
-                    this.onError(false);
                 };
             } else if (tab === 2) {
                 this.changeLoading(false);
@@ -62,10 +63,6 @@ export default class App extends Component {
 
     componentDidCatch(err){
         this.onError(err.message);
-    };
-
-    removeRequest = () => {
-        this.setState({request: null});
     };
 
     changeLoading = (load) => {
@@ -88,10 +85,7 @@ export default class App extends Component {
     };
  
     onError = (message) => {
-        this.setState({
-            error: message,
-            loading: false
-        });
+        this.setState({error: message});
     };
 
     changePage = (page) => {
