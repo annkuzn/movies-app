@@ -25,20 +25,12 @@ export default class App extends Component {
         totalPages: 1,
         tab: 1,
         genres: null,
-        sessionId: null
     };
 
     timer = null;
 
-    async componentDidMount() {   
-        
-        if (!this.movieApi.sessionId) {
-            const id = await this.getId();
-
-            this.setState({
-                sessionId: id
-            });
-        };
+    componentDidMount() {   
+        this.movieApi.getSessionId();   
 
         this.movieApi.getGenres()
         .then(res => {
@@ -73,10 +65,6 @@ export default class App extends Component {
 
     componentDidCatch(err){
         this.onError(err.message);
-    };
-
-    getId() {
-        return this.movieApi.getSessionId();
     };
 
     removeRequest = () => {
@@ -146,8 +134,10 @@ export default class App extends Component {
     };
 
     updateSearchTab = (tabKey) => {
+        const numberTab = +tabKey;
+
         this.setState({
-            tab: +tabKey,
+            tab: numberTab,
             loading: true,
         });
     };
@@ -162,7 +152,7 @@ export default class App extends Component {
 
     render () {
 
-        const { searchMovies, ratedMovies, loading, error, currentPage, totalPages, genres, tab, sessionId } = this.state;
+        const { searchMovies, ratedMovies, loading, error, currentPage, totalPages, genres, tab } = this.state;
         const className = tab === 1 ? "Search" : "Rated";
         const { TabPane } = Tabs;
         const data = tab === 1 ? searchMovies : ratedMovies;
@@ -211,9 +201,9 @@ export default class App extends Component {
                     loading={loading}
                     spinner={spinner}
                     message={message}
-                    sessionId={sessionId}
                     className={className}
                     pagination={pagination}
+                    ratedMovies={ratedMovies}
                     pushRatedMovie={this.pushRatedMovie}
                 />
             </Provider>
