@@ -152,7 +152,7 @@ export default class App extends Component {
         const { infoMessage, input, className, data } = tab === 1 ? {
             data: searchMovies,
             input: searchInput,
-            className: "Search",
+            className: "Search",    
             infoMessage: "Введите запрос",  
         } : {
             data: ratedMovies,
@@ -174,9 +174,9 @@ export default class App extends Component {
                 <Section 
                     data={data}
                     error={error}
+                    alert={alert}
                     loading={loading}
                     spinner={spinner}
-                    alert={alert}
                     className={className}
                     ratedMovies={ratedMovies}
                     pushRatedMovie={this.pushRatedMovie}

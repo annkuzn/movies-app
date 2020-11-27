@@ -5,7 +5,7 @@ import 'antd/dist/antd.css';
 
 import Movie from '../movie/movie';
 
-const Section = ({ data, error, loading, spinner, alert, className, ratedMovies, pushRatedMovie }) => {
+const Section = ({ data, error, alert, loading, spinner, className, ratedMovies, pushRatedMovie }) => {
 
     let key = 0;
                     
@@ -43,9 +43,9 @@ export default Section;
 Section.defaultProps = {
     data: null,
     error: false,
+    alert: null,
     loading: true,
     spinner: null,
-    alert: null,
     className: 'search',
     ratedMovies: [],
     pushRatedMovie: (() => {}),
@@ -57,9 +57,9 @@ Section.propTypes = {
         PropTypes.bool,
         PropTypes.string
     ]),
+    alert: PropTypes.element,
     loading: PropTypes.bool,
     spinner: PropTypes.element,
-    alert: PropTypes.element,
     className: PropTypes.string,
     ratedMovies: PropTypes.arrayOf(PropTypes.object),
     pushRatedMovie: PropTypes.func,
