@@ -17,11 +17,8 @@ export default class MovieApi {
         return res.json();
     };
 
-    getMovies(currentPage, prevRequest, request) {
-
-        const curPage = prevRequest === request ? currentPage : 1;
-
-        return  this.getResource('search/movie', `query=${request}&page=${curPage}`)
+    getMovies(request, currentPage) {
+        return  this.getResource('search/movie', `query=${request}&page=${currentPage}`)
                 .then(res => {
                     const moviesArr = res.results;
                     
@@ -29,7 +26,7 @@ export default class MovieApi {
                         throw new Error(`Нет результатов по запросу "${request}"`);
                     };
 
-                    return [moviesArr, res.total_results, curPage];
+                    return [moviesArr, res.total_results];
                 });
     };
 
