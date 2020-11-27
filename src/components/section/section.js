@@ -5,7 +5,7 @@ import 'antd/dist/antd.css';
 
 import Movie from '../movie/movie';
 
-const Section = ({ data, error, loading, spinner, message, className, ratedMovies, pushRatedMovie }) => {
+const Section = ({ data, error, loading, spinner, alert, className, ratedMovies, pushRatedMovie }) => {
 
     let key = 0;
                     
@@ -29,7 +29,7 @@ const Section = ({ data, error, loading, spinner, message, className, ratedMovie
 
     const contentWithoutError = loading ? spinner : list;
 
-    const content = (error || (!loading && !movies)) ? message : contentWithoutError;
+    const content = (error || (!loading && !movies)) ? alert : contentWithoutError;
 
     return (
         <section className={className}>
@@ -45,7 +45,7 @@ Section.defaultProps = {
     error: false,
     loading: true,
     spinner: null,
-    message: null,
+    alert: null,
     className: 'search',
     ratedMovies: [],
     pushRatedMovie: (() => {}),
@@ -59,7 +59,7 @@ Section.propTypes = {
     ]),
     loading: PropTypes.bool,
     spinner: PropTypes.element,
-    message: PropTypes.element,
+    alert: PropTypes.element,
     className: PropTypes.string,
     ratedMovies: PropTypes.arrayOf(PropTypes.object),
     pushRatedMovie: PropTypes.func,

@@ -38,7 +38,7 @@ export default class App extends Component {
     };
 
     componentDidUpdate(prevProp, prevState) {
-        const { tab, request, ratedMovies, currentPage } = this.state;
+        const { tab, request, currentPage } = this.state;
 
         if (prevState.tab !== tab || prevState.request !== request || prevState.currentPage !== currentPage) {
             this.changeLoading(true);
@@ -65,8 +65,6 @@ export default class App extends Component {
                 };
             } else if (tab === 2) {
                 this.changeLoading(false);
-
-                if (!ratedMovies.length) this.onError('Пока нет оцененных фильмов');
             };
         };
     };
@@ -78,21 +76,6 @@ export default class App extends Component {
     changeLoading = (load) => {
         this.setState({loading: load});
     };
-
-/*     searchMovies = (func) => {
-        const { currentPage } = this.state;
-
-        func.then(([ movies, pages, curPage ])=> {
-            this.setState({
-                error: false,
-                loading: false,
-                searchMovies: movies,
-                currentPage: curPage || currentPage,
-                totalPages: pages,
-            });
-        })
-        .catch(err => this.onError(err.message)); 
-    }; */
  
     onError = (message) => {
         this.setState({error: message});
@@ -145,6 +128,14 @@ export default class App extends Component {
         const { tab, genres, error, loading, ratedMovies, searchMovies, currentPage, totalPages } = this.state;
         const { TabPane } = Tabs;
 
+        const createAlert = (type, message, descr) => {
+            return <Alert
+                        type={type}
+                        message={message}
+                        description={descr}
+                    />
+        };
+
         const searchInput = <SearchInput updateRequest={this.updateRequest} />;
 
         const paginationSearchMovies = <Pagination
@@ -155,25 +146,22 @@ export default class App extends Component {
                                         />
         
         const spinner = <div className="spin">
-                            <Spin size='large' />
+                            <Spin size="large" />
                         </div>;
-                
-        const errorMessage = <Alert
-                                type="error"
-                                message="Ошибка"
-                                description={error}
-                             />;
+        
+        const { infoMessage, input, className, data } = tab === 1 ? {
+            data: searchMovies,
+            input: searchInput,
+            className: "Search",
+            infoMessage: "Введите запрос",  
+        } : {
+            data: ratedMovies,
+            input: null,
+            className: "Rated",
+            infoMessage: "Пока нет оцененных фильмов",  
+        };
 
-        const infoMessage = <Alert
-                                type="info"
-                                className="infoMessage"
-                                message="Введите запрос"
-                            />
-
-        const input = tab === 1 ? searchInput : null;
-        const className = tab === 1 ? "Search" : "Rated";
-        const message = error ? errorMessage : infoMessage;
-        const data = tab === 1 ? searchMovies : ratedMovies;
+        const alert = error ? createAlert("error", "Ошибка", error) : createAlert("info", infoMessage);
         const pagination = (!data.length || tab === 2 || loading) ? null : paginationSearchMovies;
 
         return (
@@ -188,7 +176,7 @@ export default class App extends Component {
                     error={error}
                     loading={loading}
                     spinner={spinner}
-                    message={message}
+                    alert={alert}
                     className={className}
                     ratedMovies={ratedMovies}
                     pushRatedMovie={this.pushRatedMovie}
