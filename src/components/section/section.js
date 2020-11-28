@@ -6,7 +6,6 @@ import 'antd/dist/antd.css';
 import Movie from '../movie/movie';
 
 const Section = ({ data, error, alert, loading, spinner, className, ratedMovies, pushRatedMovie }) => {
-
     let key = 0;
                     
     const movies =  data.length ? data.map((movie) => {

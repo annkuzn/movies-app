@@ -1,4 +1,4 @@
-import React, { Component, PureComponent } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { format } from 'date-fns';
 import { Rate, Skeleton } from 'antd';
@@ -8,93 +8,74 @@ import './movie.css';
 
 import { Consumer } from '../../context';
 
-import MovieApi from '../../services/movie-api';
 import { cutDescr, setRatingColor } from './helpers';
 
 
-export default class Movie  extends PureComponent {
+const Movie = ({ ind, movie, ratedMovies, pushRatedMovie }) => {
 
-    static defaultProps = {
-        ind: 0,
-        movie: [],
-        ratedMovies: [],
-        pushRatedMovie: (() => {}),
-    };
-    
-    static propTypes = {
-        ind: PropTypes.number,
-        movie: PropTypes.objectOf(PropTypes.oneOfType([
-            PropTypes.string,
-            PropTypes.number,
-            PropTypes.bool,
-            PropTypes.array
-        ])),
-        ratedMovies: PropTypes.arrayOf(PropTypes.object),
-        pushRatedMovie: PropTypes.func,  
-    };
-
-    movieApi = new MovieApi ();
-
-    state = {
-        rateValue: 0,
-    };
-
-    componentDidMount() {
-        const { movie, ratedMovies } = this.props;
-
-        ratedMovies.forEach(item => {
-            if (movie.id === item.id) {
-                this.setState({rateValue: item.rating});
-            };
-        });
-    };
-
-    rateChangeHandler = (event) => {
-        this.changeRateValue(event);
-    };
-
-    changeRateValue = (event) => {
-        const { pushRatedMovie, movie } = this.props;
-
-        this.setState({rateValue: event});
-
+    const changeRateValue = (event) => {
         const ratedMovie = {...movie, rating: event};
         pushRatedMovie(ratedMovie);
     };
 
-    render() {
-        
-        const { rateValue } = this.state;
-        const { ind, movie } = this.props;
-        const { title, overview, release_date: releaseDate, poster_path: posterPath, vote_average: voteAverage, genre_ids: genreIds } = movie;
-        
-        const imageSkeleton = <Skeleton.Image className='movie__img'/>;
-
-        const img = <img className='movie__img' src={`https://image.tmdb.org/t/p/w500${posterPath}`} alt={title} />;
-        const image = posterPath ? img : imageSkeleton;
-
-        const date = releaseDate ? format(new Date(releaseDate), 'LLLL d, y') : null;
-
-        return (
-            <>
-                <div className='movie__poster'>
-                    {image}
-                </div>
-                <div className='movie__details'>
-                    <h1 className='movie__name'>{title}</h1>
-                    <span className='movie__date'>{date}</span>
-                    <Genres genresIds={genreIds}/>
-                </div>
-                <MovieOverview overview={overview} ind={ind} />
-                <VoteAverage voteAverage={voteAverage}/>
-                <Rate className='movie__rate' count={10} value={rateValue} onChange={this.rateChangeHandler}/>
-            </>
-        );
+    const rateChangeHandler = (event) => {
+        changeRateValue(event);
     };
+
+    const { title, overview, release_date: releaseDate, poster_path: posterPath, vote_average: voteAverage, genre_ids: genreIds } = movie;
+
+    const imageSkeleton = <Skeleton.Image className='movie__img'/>;
+    const img = <img className='movie__img' src={`https://image.tmdb.org/t/p/w500${posterPath}`} alt={title} />;
+    const image = posterPath ? img : imageSkeleton;
+
+    const date = releaseDate ? format(new Date(releaseDate), 'LLLL d, y') : null;
+
+    let rateValue = 0;
+
+    ratedMovies.forEach(item => {
+        if (movie.id === item.id) rateValue = item.rating;
+    });
+
+    return (
+        <>
+            <div className='movie__poster'>
+                {image}
+            </div>
+            <div className='movie__details'>
+                <h1 className='movie__name'>{title}</h1>
+                <span className='movie__date'>{date}</span>
+                <Genres genresIds={genreIds}/>
+            </div>
+            <MovieOverview overview={overview} ind={ind} />
+            <VoteAverage voteAverage={voteAverage}/>
+            <Rate className='movie__rate' count={10} value={rateValue} onChange={rateChangeHandler}/>
+        </>
+    );
 };
 
-const Genres = ({ genresIds }) => {
+export default Movie;
 
+Movie.defaultProps = {
+    ind: 0,
+    movie: [],
+    ratedMovies: [],
+    pushRatedMovie: (() => {}),
+};
+
+Movie.propTypes = {
+    ind: PropTypes.number,
+    movie: PropTypes.objectOf(PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number,
+        PropTypes.bool,
+        PropTypes.array
+    ])),
+    ratedMovies: PropTypes.arrayOf(PropTypes.object),
+    pushRatedMovie: PropTypes.func,  
+};
+
+
+const Genres = ({ genresIds }) => {
     return (
         <Consumer>
             {genres => {
