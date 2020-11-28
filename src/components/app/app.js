@@ -26,8 +26,6 @@ export default class App extends Component {
         totalPages: 1,
     };
 
-    timer = null;
-
     componentDidMount() {   
         this.movieApi.getSessionId();   
 
@@ -42,7 +40,6 @@ export default class App extends Component {
 
         if (prevState.request !== request || prevState.currentPage !== currentPage) {
             this.changeLoading(true);
-            this.onError(false);
 
             const curPage = prevState.request === request ? currentPage : 1;
 
@@ -86,19 +83,14 @@ export default class App extends Component {
 
     pushRatedMovie = (movie) => {
         const { ratedMovies } = this.state;
-        let newMovie = true;
 
-        const newArr = ratedMovies.map(mov => {
-            if (mov.id === movie.id) {
-                newMovie = false;
+        const newRatedMovies = ratedMovies.reduce((acc, item, index, arr) => {
+            if (item.id === movie.id) return [...acc, movie];
 
-                return {...mov, rating: movie.rating};
-            };
+            return (index === arr.length - 1) ? [...acc, item, movie] : [...acc, item]; 
+        }, []);
 
-            return mov;
-        })
-
-        this.setState({ratedMovies: newMovie ? [...newArr, movie] : [...newArr]});
+        this.setState({ratedMovies: ratedMovies.length === 0 ? [movie] : newRatedMovies});
     };
 
     updateSearchTab = (tabKey) => {
