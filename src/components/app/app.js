@@ -38,32 +38,27 @@ export default class App extends Component {
     };
 
     componentDidUpdate(prevProp, prevState) {
-        const { tab, request, currentPage } = this.state;
+        const { request, currentPage } = this.state;
 
-        if (prevState.tab !== tab || prevState.request !== request || prevState.currentPage !== currentPage) {
+        if (prevState.request !== request || prevState.currentPage !== currentPage) {
             this.changeLoading(true);
+            this.onError(false);
 
-            if (tab === 1) {
-                this.onError(false);
+            const curPage = prevState.request === request ? currentPage : 1;
 
-                const curPage = prevState.request === request ? currentPage : 1;
-
-                if (request) {
-                    this.movieApi.getMovies(request, curPage)
-                    .then(([ movies, pages ])=> {
-                        this.setState({
-                            error: false,
-                            loading: false,
-                            searchMovies: movies,
-                            currentPage: curPage,
-                            totalPages: pages,
-                        });
-                    })
-                    .catch(err => this.onError(err.message));
-                } else {
-                    this.changeLoading(false);
-                };
-            } else if (tab === 2) {
+            if (request) {
+                this.movieApi.getMovies(request, curPage)
+                .then(([ movies, pages ])=> {
+                    this.setState({
+                        error: false,
+                        loading: false,
+                        searchMovies: movies,
+                        currentPage: curPage,
+                        totalPages: pages,
+                    });
+                })
+                .catch(err => this.onError(err.message));
+            } else {
                 this.changeLoading(false);
             };
         };
@@ -109,10 +104,7 @@ export default class App extends Component {
     updateSearchTab = (tabKey) => {
         const numberTab = +tabKey;
 
-        this.setState({
-            tab: numberTab,
-            loading: true,
-        });
+        this.setState({tab: numberTab});
     };
  
     tabClickHandler = (tabKey) => {
@@ -124,10 +116,8 @@ export default class App extends Component {
     };
 
     render () {
-
         const { tab, genres, error, loading, ratedMovies, searchMovies, currentPage, totalPages } = this.state;
         const { TabPane } = Tabs;
-
         const createAlert = (type, message, descr) => {
             return <Alert
                         type={type}
