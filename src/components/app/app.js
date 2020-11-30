@@ -5,7 +5,7 @@ import 'antd/dist/antd.css';
 import './app.css';
 
 import { Provider } from '../../context';
-import Section from '../section/section';
+import MoviesList from '../moviesList/moviesList';
 import Pagination from '../pagination/pagination';
 import SearchInput from '../searchInput/searchInput';
 import MovieApi from '../../services/movie-api';
@@ -153,7 +153,7 @@ export default class App extends Component {
                     <TabPane tab="Rated" key="2" />
                 </Tabs>
                 {input}
-                <Section 
+                <MoviesList 
                     data={data}
                     error={error}
                     alert={alert}

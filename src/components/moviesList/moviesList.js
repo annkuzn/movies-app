@@ -5,7 +5,7 @@ import 'antd/dist/antd.css';
 
 import Movie from '../movie/movie';
 
-const Section = ({ data, error, alert, loading, spinner, className, ratedMovies, pushRatedMovie }) => {
+const MoviesList = ({ data, error, alert, loading, spinner, className, ratedMovies, pushRatedMovie }) => {
     let key = 0;
                     
     const movies =  data.length ? data.map((movie) => {
@@ -37,9 +37,9 @@ const Section = ({ data, error, alert, loading, spinner, className, ratedMovies,
     )
 }
 
-export default Section;
+export default MoviesList;
 
-Section.defaultProps = {
+MoviesList.defaultProps = {
     data: null,
     error: false,
     alert: null,
@@ -50,7 +50,7 @@ Section.defaultProps = {
     pushRatedMovie: (() => {}),
 }
 
-Section.propTypes = {
+MoviesList.propTypes = {
     data: PropTypes.arrayOf(PropTypes.object),
     error: PropTypes.oneOfType([
         PropTypes.bool,
