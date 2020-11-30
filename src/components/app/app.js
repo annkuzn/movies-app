@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Tabs, Spin, Alert } from 'antd';
+import { Tabs, Spin, Alert as AlertAntd  } from 'antd';
+import PropTypes from 'prop-types';
 
 import 'antd/dist/antd.css';
 import './app.css';
@@ -70,7 +71,10 @@ export default class App extends Component {
     };
  
     onError = (message) => {
-        this.setState({error: message});
+        this.setState({
+            error: message,
+            loading: false
+        });
     };
 
     changePage = (page) => {
@@ -96,7 +100,10 @@ export default class App extends Component {
     updateSearchTab = (tabKey) => {
         const numberTab = +tabKey;
 
-        this.setState({tab: numberTab});
+        this.setState({
+            tab: numberTab,
+            error: false
+        });
     };
  
     tabClickHandler = (tabKey) => {
@@ -110,41 +117,7 @@ export default class App extends Component {
     render () {
         const { tab, genres, error, loading, ratedMovies, searchMovies, currentPage, totalPages } = this.state;
         const { TabPane } = Tabs;
-        const createAlert = (type, message, descr) => {
-            return <Alert
-                        type={type}
-                        message={message}
-                        description={descr}
-                    />
-        };
-
-        const searchInput = <SearchInput updateRequest={this.updateRequest} />;
-
-        const paginationSearchMovies = <Pagination
-                                            defaultPageSize={20}
-                                            totalPages={totalPages}
-                                            currentPage={currentPage}
-                                            paginationChangeHandler={this.paginationChangeHandler}
-                                        />
-        
-        const spinner = <div className="spin">
-                            <Spin size="large" />
-                        </div>;
-        
-        const { infoMessage, input, className, data } = tab === 1 ? {
-            data: searchMovies,
-            input: searchInput,
-            className: "Search",    
-            infoMessage: "Введите запрос",  
-        } : {
-            data: ratedMovies,
-            input: null,
-            className: "Rated",
-            infoMessage: "Пока нет оцененных фильмов",  
-        };
-
-        const alert = error ? createAlert("error", "Ошибка", error) : createAlert("info", infoMessage);
-        const pagination = (!data.length || tab === 2 || loading) ? null : paginationSearchMovies;
+        const data = tab === 1 ? searchMovies : ratedMovies;
 
         return (
             <Provider value={genres}>
@@ -152,19 +125,109 @@ export default class App extends Component {
                     <TabPane tab="Search" key="1" />
                     <TabPane tab="Rated" key="2" />
                 </Tabs>
-                {input}
-                <MoviesList 
+                <SearchInput
+                    tab={tab}
+                    updateRequest={this.updateRequest}
+                />
+                <Spinner load={loading} />
+                <Alert
+                    tab={tab}
                     data={data}
                     error={error}
-                    alert={alert}
                     loading={loading}
-                    spinner={spinner}
-                    className={className}
+                />
+                <MoviesList
+                    tab={tab}
+                    error={error}
+                    loading={loading}
+                    data={data}
                     ratedMovies={ratedMovies}
                     pushRatedMovie={this.pushRatedMovie}
                 />
-                <div className='movies__pagination'>{pagination}</div>
+                <PaginationSearchMovies
+                    searchMovies={searchMovies}
+                    tab={tab}
+                    loading={loading}
+                    error={error}
+                    totalPages={totalPages}
+                    currentPage={currentPage}
+                    paginationChangeHandler={this.paginationChangeHandler}
+                />
             </Provider>
         );
     };
+};
+
+const Spinner = ({ load }) => {
+    return load ? <Spin className="spin" size="large" /> : null;
+};
+
+const Alert = ({ tab, data, error, loading }) => {
+    const type = error ? "error" : "info";
+    const infoMessage = tab === 1 ? "Введите запрос" : "Пока нет оцененных фильмов";
+
+    return ((error && !loading) || (!loading && !data.length)) ? (
+        <AlertAntd
+            type={type}
+            message={error ? "Ошибка" : infoMessage}
+            description={error}
+        /> 
+    ) : null;
+};
+
+const PaginationSearchMovies = ({ searchMovies, tab, loading, error, totalPages, currentPage, paginationChangeHandler }) => {
+    return (searchMovies.length && tab === 1 && !loading && !error) ? (
+        <div className='movies__pagination'>
+          <Pagination
+            defaultPageSize={20}
+            totalPages={totalPages}
+            currentPage={currentPage}
+            paginationChangeHandler={paginationChangeHandler}
+        />  
+        </div>
+    ) : null;
+};
+
+
+
+Spinner.defaultProps = {
+    load: false
+};
+
+Spinner.propTypes = {
+    load: PropTypes.bool
+};
+
+Alert.defaultProps = {
+    tab: 1,
+    data: [],
+    error: false,
+    loading: false
+};
+
+Alert.propTypes = {
+    tab: PropTypes.number,
+    data: PropTypes.arrayOf(PropTypes.object),
+    error: PropTypes.bool,
+    loading: PropTypes.bool
+};
+
+PaginationSearchMovies.defaultProps = {
+    searchMovies: [],
+    tab: 1,
+    loading: false,
+    error: false,
+    totalPages: null,
+    currentPage: 1,
+    paginationChangeHandler: (() => {}),
+};
+
+PaginationSearchMovies.propTypes = {
+    searchMovies: PropTypes.arrayOf(PropTypes.object),
+    tab: PropTypes.number,
+    loading: PropTypes.bool,
+    error: PropTypes.bool,
+    totalPages: PropTypes.number,
+    currentPage: PropTypes.number,
+    paginationChangeHandler: PropTypes.func,
 };

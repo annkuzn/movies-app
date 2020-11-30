@@ -20,7 +20,7 @@
 }
 
 .spin {
-    text-align: center;
+    display: block;
     border-radius: 4px;
     margin-bottom: 20px;
     padding: 30px 50px;
