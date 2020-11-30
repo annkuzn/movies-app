@@ -88,13 +88,17 @@ export default class App extends Component {
     pushRatedMovie = (movie) => {
         const { ratedMovies } = this.state;
 
-        const newRatedMovies = ratedMovies.reduce((acc, item, index, arr) => {
-            if (item.id === movie.id) return [...acc, movie];
+        let newMovie = true;
 
-            return (index === arr.length - 1) ? [...acc, item, movie] : [...acc, item]; 
-        }, []);
+        const newRatedMovies = ratedMovies.map(item => {
+            if (item.id === movie.id) {
+                newMovie = false;
+                return movie;
+            }
+            return item;
+        });
 
-        this.setState({ratedMovies: ratedMovies.length === 0 ? [movie] : newRatedMovies});
+        this.setState({ratedMovies: newMovie ? [...newRatedMovies, movie] : newRatedMovies});
     };
 
     updateSearchTab = (tabKey) => {
