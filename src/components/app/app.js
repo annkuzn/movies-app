@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Tabs, Spin, Alert as AlertAntd, Pagination as PaginationAntd  } from 'antd';
+import { Tabs, Spin, Pagination as PaginationAntd  } from 'antd';
 import PropTypes from 'prop-types';
 
 import 'antd/dist/antd.css';
@@ -9,6 +9,7 @@ import { Provider } from '../../context';
 import MoviesList from '../moviesList/moviesList';
 import SearchInput from '../searchInput/searchInput';
 import MovieApi from '../../services/movie-api';
+import Alert from '../alert/alert';
 
 export default class App extends Component {
 
@@ -132,7 +133,7 @@ export default class App extends Component {
                     tab={tab}
                     updateRequest={this.updateRequest}
                 />
-                <Spinner load={loading} />
+                <Loader load={loading} />
                 <Alert
                     tab={tab}
                     data={data}
@@ -162,21 +163,8 @@ export default class App extends Component {
     };
 };
 
-const Spinner = ({ load }) => {
+const Loader = ({ load }) => {
     return load ? <Spin className="spin" size="large" /> : null;
-};
-
-const Alert = ({ tab, data, error, loading }) => {
-    const type = error ? "error" : "info";
-    const infoMessage = tab === 1 ? "Введите запрос" : "Пока нет оцененных фильмов";
-
-    return ((error && !loading) || (!loading && !data.length)) ? (
-        <AlertAntd
-            type={type}
-            message={error ? "Ошибка" : infoMessage}
-            description={error}
-        /> 
-    ) : null;
 };
 
 const Pagination = ({ 
@@ -203,26 +191,12 @@ const Pagination = ({
 
 
 
-Spinner.defaultProps = {
+Loader.defaultProps = {
     load: false
 };
 
-Spinner.propTypes = {
+Loader.propTypes = {
     load: PropTypes.bool
-};
-
-Alert.defaultProps = {
-    tab: 1,
-    data: [],
-    error: false,
-    loading: false
-};
-
-Alert.propTypes = {
-    tab: PropTypes.number,
-    data: PropTypes.arrayOf(PropTypes.object),
-    error: PropTypes.bool,
-    loading: PropTypes.bool
 };
 
 Pagination.defaultProps = {
