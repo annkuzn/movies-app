@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Tabs, Spin, Pagination as PaginationAntd  } from 'antd';
+import { Tabs, Spin, Pagination as PaginationAntd } from 'antd';
 import PropTypes from 'prop-types';
 
 import 'antd/dist/antd.css';
@@ -142,22 +142,27 @@ export default class App extends Component {
                 />
                 <MoviesList
                     tab={tab}
+                    data={data}
                     error={error}
                     loading={loading}
-                    data={data}
                     ratedMovies={ratedMovies}
                     pushRatedMovie={this.pushRatedMovie}
                 />
                 <Pagination
-                    searchMovies={searchMovies}
                     tab={tab}
-                    loading={loading}
                     error={error}
-                    totalPages={totalPages}
-                    currentPage={currentPage}
-                    defaultPageSize={20}
-                    paginationChangeHandler={this.paginationChangeHandler}
-                />
+                    loading={loading}
+                    searchMovies={searchMovies} 
+                >
+                    <PaginationAntd
+                        hideOnSinglePage
+                        total={totalPages}
+                        defaultPageSize={20}
+                        current={currentPage}
+                        showSizeChanger={false}
+                        onChange={this.paginationChangeHandler}
+                    />
+                </Pagination>
             </Provider>
         );
     };
@@ -167,29 +172,12 @@ const Loader = ({ load }) => {
     return load ? <Spin className="spin" size="large" /> : null;
 };
 
-const Pagination = ({ 
-    searchMovies, 
+const Pagination = ({  
     tab, 
     loading, 
-    error, 
-    totalPages, 
-    currentPage, 
-    paginationChangeHandler, 
-    defaultPageSize 
-}) => {
-    return (searchMovies.length && tab === 1 && !loading && !error) ? (
-        <div className='movies__pagination'>
-          <PaginationAntd
-            defaultPageSize={defaultPageSize}
-            totalPages={totalPages}
-            currentPage={currentPage}
-            paginationChangeHandler={paginationChangeHandler}
-        />  
-        </div>
-    ) : null;
-};
-
-
+    error,
+    children
+}) => (tab === 1 && !loading && !error) ? children : null;
 
 Loader.defaultProps = {
     load: false
@@ -200,23 +188,15 @@ Loader.propTypes = {
 };
 
 Pagination.defaultProps = {
-    searchMovies: [],
     tab: 1,
     loading: false,
     error: false,
-    totalPages: null,
-    currentPage: 1,
-    defaultPageSize: 20,
-    paginationChangeHandler: (() => {}),
+    children: null
 };
 
 Pagination.propTypes = {
-    searchMovies: PropTypes.arrayOf(PropTypes.object),
     tab: PropTypes.number,
     loading: PropTypes.bool,
     error: PropTypes.bool,
-    totalPages: PropTypes.number,
-    currentPage: PropTypes.number,
-    defaultPageSize: PropTypes.number,
-    paginationChangeHandler: PropTypes.func,
+    children: PropTypes.element
 };
