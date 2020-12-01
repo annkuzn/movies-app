@@ -55,26 +55,6 @@ const Movie = ({ ind, movie, ratedMovies, pushRatedMovie }) => {
 
 export default Movie;
 
-Movie.defaultProps = {
-    ind: 0,
-    movie: [],
-    ratedMovies: [],
-    pushRatedMovie: (() => {}),
-};
-
-Movie.propTypes = {
-    ind: PropTypes.number,
-    movie: PropTypes.objectOf(PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.number,
-        PropTypes.bool,
-        PropTypes.array
-    ])),
-    ratedMovies: PropTypes.arrayOf(PropTypes.object),
-    pushRatedMovie: PropTypes.func,  
-};
-
-
 const Genres = ({ genresIds }) => {
     return (
         <Consumer>
@@ -151,20 +131,41 @@ class MovieOverview extends Component{
     };
 };
 
-Genres.defaultProps = {
-    genresIds: null
-};
-
-Genres.propTypes = {
-    genresIds: PropTypes.arrayOf(PropTypes.number)
-};
-
 const VoteAverage = ({ voteAverage }) => {
     return (
         <div className='movie__voteAverage' style={{ border: `2px solid ${setRatingColor(voteAverage)}`}}>
             <span>{voteAverage}</span>
         </div>
     );
+};
+
+
+
+Movie.defaultProps = {
+    ind: 0,
+    movie: [],
+    ratedMovies: [],
+    pushRatedMovie: (() => {}),
+};
+
+Movie.propTypes = {
+    ind: PropTypes.number,
+    movie: PropTypes.objectOf(PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number,
+        PropTypes.bool,
+        PropTypes.array
+    ])),
+    ratedMovies: PropTypes.arrayOf(PropTypes.object),
+    pushRatedMovie: PropTypes.func,  
+};
+
+Genres.defaultProps = {
+    genresIds: null
+};
+
+Genres.propTypes = {
+    genresIds: PropTypes.arrayOf(PropTypes.number)
 };
 
 VoteAverage.defaultProps = {
