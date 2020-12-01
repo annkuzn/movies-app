@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Tabs, Spin, Alert as AlertAntd  } from 'antd';
+import { Tabs, Spin, Alert as AlertAntd, Pagination as PaginationAntd  } from 'antd';
 import PropTypes from 'prop-types';
 
 import 'antd/dist/antd.css';
@@ -7,7 +7,6 @@ import './app.css';
 
 import { Provider } from '../../context';
 import MoviesList from '../moviesList/moviesList';
-import Pagination from '../pagination/pagination';
 import SearchInput from '../searchInput/searchInput';
 import MovieApi from '../../services/movie-api';
 
@@ -148,13 +147,14 @@ export default class App extends Component {
                     ratedMovies={ratedMovies}
                     pushRatedMovie={this.pushRatedMovie}
                 />
-                <PaginationSearchMovies
+                <Pagination
                     searchMovies={searchMovies}
                     tab={tab}
                     loading={loading}
                     error={error}
                     totalPages={totalPages}
                     currentPage={currentPage}
+                    defaultPageSize={20}
                     paginationChangeHandler={this.paginationChangeHandler}
                 />
             </Provider>
@@ -179,11 +179,20 @@ const Alert = ({ tab, data, error, loading }) => {
     ) : null;
 };
 
-const PaginationSearchMovies = ({ searchMovies, tab, loading, error, totalPages, currentPage, paginationChangeHandler }) => {
+const Pagination = ({ 
+    searchMovies, 
+    tab, 
+    loading, 
+    error, 
+    totalPages, 
+    currentPage, 
+    paginationChangeHandler, 
+    defaultPageSize 
+}) => {
     return (searchMovies.length && tab === 1 && !loading && !error) ? (
         <div className='movies__pagination'>
-          <Pagination
-            defaultPageSize={20}
+          <PaginationAntd
+            defaultPageSize={defaultPageSize}
             totalPages={totalPages}
             currentPage={currentPage}
             paginationChangeHandler={paginationChangeHandler}
@@ -216,22 +225,24 @@ Alert.propTypes = {
     loading: PropTypes.bool
 };
 
-PaginationSearchMovies.defaultProps = {
+Pagination.defaultProps = {
     searchMovies: [],
     tab: 1,
     loading: false,
     error: false,
     totalPages: null,
     currentPage: 1,
+    defaultPageSize: 20,
     paginationChangeHandler: (() => {}),
 };
 
-PaginationSearchMovies.propTypes = {
+Pagination.propTypes = {
     searchMovies: PropTypes.arrayOf(PropTypes.object),
     tab: PropTypes.number,
     loading: PropTypes.bool,
     error: PropTypes.bool,
     totalPages: PropTypes.number,
     currentPage: PropTypes.number,
+    defaultPageSize: PropTypes.number,
     paginationChangeHandler: PropTypes.func,
 };
