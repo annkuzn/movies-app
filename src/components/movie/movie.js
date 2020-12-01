@@ -11,49 +11,88 @@ import { Consumer } from '../../context';
 import { cutDescr, setRatingColor } from './helpers';
 
 
-const Movie = ({ ind, movie, ratedMovies, pushRatedMovie }) => {
+export default class Movie extends Component {
 
-    const changeRateValue = (event) => {
+    static defaultProps = {
+        ind: 0,
+        movie: [],
+        ratedMovies: [],
+        pushRatedMovie: (() => {}),
+    };
+    
+    static propTypes = {
+        ind: PropTypes.number,
+        movie: PropTypes.objectOf(PropTypes.oneOfType([
+            PropTypes.string,
+            PropTypes.number,
+            PropTypes.bool,
+            PropTypes.array
+        ])),
+        ratedMovies: PropTypes.arrayOf(PropTypes.object),
+        pushRatedMovie: PropTypes.func,
+    };
+
+    state = {
+        currentOverview: null
+    };
+
+    componentDidMount() {
+        this.updateDescr();
+    };
+
+    changeRateValue = (event) => {
+        const { pushRatedMovie, movie } = this.props;
         const ratedMovie = {...movie, rating: event};
+
         pushRatedMovie(ratedMovie);
     };
+    
+    rateChangeHandler = (event) => {
+        this.changeRateValue(event);
+    };
+    
+    updateDescr = () => {
+        const { ind, movie } = this.props;
+        const { overview } = movie;
 
-    const rateChangeHandler = (event) => {
-        changeRateValue(event);
+        this.setState({currentOverview: overview ? cutDescr(overview, ind) : null});
     };
 
-    const { title, overview, release_date: releaseDate, poster_path: posterPath, vote_average: voteAverage, genre_ids: genreIds } = movie;
-
-    const imageSkeleton = <Skeleton.Image className='movie__img'/>;
-    const img = <img className='movie__img' src={`https://image.tmdb.org/t/p/w500${posterPath}`} alt={title} />;
-    const image = posterPath ? img : imageSkeleton;
-
-    const date = releaseDate ? format(new Date(releaseDate), 'LLLL d, y') : null;
-
-    let rateValue = 0;
-
-    ratedMovies.forEach(item => {
-        if (movie.id === item.id) rateValue = item.rating;
-    });
-
-    return (
-        <>
-            <div className='movie__poster'>
-                {image}
-            </div>
-            <div className='movie__details'>
-                <h1 className='movie__name'>{title}</h1>
-                <span className='movie__date'>{date}</span>
-                <Genres genresIds={genreIds}/>
-            </div>
-            <MovieOverview overview={overview} ind={ind} />
-            <VoteAverage voteAverage={voteAverage}/>
-            <Rate className='movie__rate' count={10} value={rateValue} onChange={rateChangeHandler}/>
-        </>
-    );
+    render() {
+        
+        const { movie, ratedMovies } = this.props;
+        const { currentOverview } = this.state;
+        const { title, release_date: releaseDate, poster_path: posterPath, vote_average: voteAverage, genre_ids: genreIds } = movie;
+    
+        const imageSkeleton = <Skeleton.Image className='movie__img'/>;
+        const img = <img className='movie__img' src={`https://image.tmdb.org/t/p/w500${posterPath}`} alt={title} />;
+        const image = posterPath ? img : imageSkeleton;
+    
+        const date = releaseDate ? format(new Date(releaseDate), 'LLLL d, y') : null;
+    
+        let rateValue = 0;
+    
+        ratedMovies.forEach(item => {
+            if (movie.id === item.id) rateValue = item.rating;
+        });
+    
+        return (
+            <>
+                <div className='movie__poster'>
+                    {image}
+                </div>
+                <div className='movie__details'>
+                    <h1 className='movie__name'>{title}</h1>
+                    <span className='movie__date'>{date}</span>
+                    <Genres genresIds={genreIds}/>
+                </div>
+                <p className='movie__descr'>{currentOverview}</p>
+                <VoteAverage voteAverage={voteAverage}/>
+                <Rate className='movie__rate' count={10} value={rateValue} onChange={this.rateChangeHandler}/>
+            </>
+        );
+    };
 };
-
-export default Movie;
 
 const Genres = ({ genresIds }) => {
     return (
@@ -90,46 +129,7 @@ const Genres = ({ genresIds }) => {
     ); 
 };
 
-class MovieOverview extends Component{
 
-    static defaultProps = {
-        overview: null,
-        ind: 0
-    };
-    
-    static propTypes = {
-        overview: PropTypes.string,
-        ind: PropTypes.number
-    };
-
-    state = {
-        overview: null
-    };
-
-    componentDidMount() {
-        this.updateDescr();
-    };
-
-    componentDidUpdate(prevProps) {
-        const { overview } = this.props;
-
-        if(prevProps.overview !== overview) {
-            this.updateDescr();
-        };
-    };
-
-    updateDescr = () => {
-        const { overview, ind } = this.props;
-
-        this.setState({overview: overview ? cutDescr(overview, ind) : null});
-    };
- 
-    render() {
-        const { overview } = this.state;
-
-        return <p className='movie__descr'>{overview}</p>;
-    };
-};
 
 const VoteAverage = ({ voteAverage }) => {
     return (
@@ -137,27 +137,6 @@ const VoteAverage = ({ voteAverage }) => {
             <span>{voteAverage}</span>
         </div>
     );
-};
-
-
-
-Movie.defaultProps = {
-    ind: 0,
-    movie: [],
-    ratedMovies: [],
-    pushRatedMovie: (() => {}),
-};
-
-Movie.propTypes = {
-    ind: PropTypes.number,
-    movie: PropTypes.objectOf(PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.number,
-        PropTypes.bool,
-        PropTypes.array
-    ])),
-    ratedMovies: PropTypes.arrayOf(PropTypes.object),
-    pushRatedMovie: PropTypes.func,  
 };
 
 Genres.defaultProps = {

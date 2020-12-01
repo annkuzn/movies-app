@@ -1,10 +1,9 @@
 const cutDescr = (overview, ind) => {
     const titles = document.querySelectorAll('.movie__name');
-
     const lineHeight = 31;
     const currentTitle = titles[ind-1];
     const numberOfTitleLines = currentTitle.clientHeight / lineHeight
-
+    console.log(currentTitle.clientHeight)
     let result = overview;
 
     const maxLengthOverview = 300;
