@@ -15,6 +15,8 @@ const Alert = ({ tab, data, error, loading }) => {
     ) : null;
 };
 
+export default Alert;
+
 Alert.defaultProps = {
     tab: 1,
     data: [],
