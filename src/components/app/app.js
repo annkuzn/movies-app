@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import { Tabs, Spin, Pagination as PaginationAntd } from 'antd';
-import PropTypes from 'prop-types';
+import { Tabs, Spin, Pagination } from 'antd';
 
 import 'antd/dist/antd.css';
 import './app.css';
@@ -10,6 +9,8 @@ import MoviesList from '../moviesList/moviesList';
 import SearchInput from '../searchInput/searchInput';
 import MovieApi from '../../services/movie-api';
 import Alert from '../alert/alert';
+
+const { TabPane } = Tabs;
 
 export default class App extends Component {
 
@@ -120,8 +121,21 @@ export default class App extends Component {
 
     render () {
         const { tab, genres, error, loading, ratedMovies, searchMovies, currentPage, totalPages } = this.state;
-        const { TabPane } = Tabs;
         const data = tab === 1 ? searchMovies : ratedMovies;
+
+        const pagination = (tab === 1 && !loading && !error) ? (
+            <Pagination
+                hideOnSinglePage
+                total={totalPages}
+                defaultPageSize={20}
+                current={currentPage}
+                showSizeChanger={false}
+                onChange={this.paginationChangeHandler}
+            />
+        ) : null;
+
+        const loader = loading ? <Spin className="spin" size="large" /> : null;
+        const input = tab === 1 ? <SearchInput updateRequest={this.updateRequest}/> : null;
 
         return (
             <Provider value={genres}>
@@ -129,11 +143,8 @@ export default class App extends Component {
                     <TabPane tab="Search" key="1" />
                     <TabPane tab="Rated" key="2" />
                 </Tabs>
-                <SearchInput
-                    tab={tab}
-                    updateRequest={this.updateRequest}
-                />
-                <Loader load={loading} />
+                {input}
+                {loader}
                 <Alert
                     tab={tab}
                     data={data}
@@ -148,55 +159,8 @@ export default class App extends Component {
                     ratedMovies={ratedMovies}
                     pushRatedMovie={this.pushRatedMovie}
                 />
-                <Pagination
-                    tab={tab}
-                    error={error}
-                    loading={loading}
-                    searchMovies={searchMovies} 
-                >
-                    <PaginationAntd
-                        hideOnSinglePage
-                        total={totalPages}
-                        defaultPageSize={20}
-                        current={currentPage}
-                        showSizeChanger={false}
-                        onChange={this.paginationChangeHandler}
-                    />
-                </Pagination>
+                {pagination}
             </Provider>
         );
     };
-};
-
-const Loader = ({ load }) => {
-    return load ? <Spin className="spin" size="large" /> : null;
-};
-
-const Pagination = ({  
-    tab, 
-    loading, 
-    error,
-    children
-}) => (tab === 1 && !loading && !error) ? children : null;
-
-Loader.defaultProps = {
-    load: false
-};
-
-Loader.propTypes = {
-    load: PropTypes.bool
-};
-
-Pagination.defaultProps = {
-    tab: 1,
-    loading: false,
-    error: false,
-    children: null
-};
-
-Pagination.propTypes = {
-    tab: PropTypes.number,
-    loading: PropTypes.bool,
-    error: PropTypes.bool,
-    children: PropTypes.element
 };
