@@ -22,12 +22,9 @@ const MoviesList = ({ error, loading, ratedMovies, data, pushRatedMovie }) => {
                     }) : null;           
 
     return ( 
-        <>
-            <ul className="movies__list">
-            {(error || loading) ? null : movies}
-            </ul>
-        </>
-        
+        <ul className="movies__list">
+            {(!error && !loading && movies) ? movies : null}
+        </ul>
     )
 }
 
