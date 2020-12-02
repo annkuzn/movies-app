@@ -11,6 +11,49 @@ import { Consumer } from '../../context';
 import { cutDescr, setRatingColor } from './helpers';
 
 
+const Genres = ({ genresIds }) => {
+    return (
+        <Consumer>
+            {genres => {
+                    const movieGenres = genresIds ? genres.filter(genre => {
+                        let result = false;
+                        genresIds.forEach(item => {
+                            if (genre.id === item) result = true;
+                        });
+
+                        return result;
+                    }) : null;
+
+                    let key = 0;
+                    
+                    const currentGenres = movieGenres ? movieGenres.map( item => {
+                        key += 1;
+
+                        return (
+                            <li key={key} className='movie__genre'>{item.name}</li>
+                        )
+                    }) : null;
+
+                    return (
+                        <div className='movie__genresList-block'>
+                            <ul className='movie__genres-list'>
+                                {currentGenres}
+                            </ul>
+                        </div>
+                    );
+                }}
+        </Consumer>
+    ); 
+};
+
+const VoteAverage = ({ voteAverage }) => {
+    return (
+        <div className='movie__voteAverage' style={{ border: `2px solid ${setRatingColor(voteAverage)}`}}>
+            <span>{voteAverage}</span>
+        </div>
+    );
+};
+
 export default class Movie extends Component {
 
     static defaultProps = {
@@ -92,51 +135,6 @@ export default class Movie extends Component {
             </>
         );
     };
-};
-
-const Genres = ({ genresIds }) => {
-    return (
-        <Consumer>
-            {genres => {
-                    const movieGenres = genresIds ? genres.filter(genre => {
-                        let result = false;
-                        genresIds.forEach(item => {
-                            if (genre.id === item) result = true;
-                        });
-
-                        return result;
-                    }) : null;
-
-                    let key = 0;
-                    
-                    const currentGenres = movieGenres ? movieGenres.map( item => {
-                        key += 1;
-
-                        return (
-                            <li key={key} className='movie__genre'>{item.name}</li>
-                        )
-                    }) : null;
-
-                    return (
-                        <div className='movie__genresList-block'>
-                            <ul className='movie__genres-list'>
-                                {currentGenres}
-                            </ul>
-                        </div>
-                    );
-                }}
-        </Consumer>
-    ); 
-};
-
-
-
-const VoteAverage = ({ voteAverage }) => {
-    return (
-        <div className='movie__voteAverage' style={{ border: `2px solid ${setRatingColor(voteAverage)}`}}>
-            <span>{voteAverage}</span>
-        </div>
-    );
 };
 
 Genres.defaultProps = {
