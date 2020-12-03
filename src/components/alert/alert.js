@@ -6,7 +6,7 @@ const Alert = ({ tab, data, error, loading }) => {
     const type = error ? "error" : "info";
     const infoMessage = tab === 1 ? "Введите запрос" : "Пока нет оцененных фильмов";
 
-    return ((error && !loading) || (!loading && !data.length)) ? (
+    return (!loading && (error || !data.length)) ? (
         <AlertAntd
             type={type}
             message={error ? "Ошибка" : infoMessage}
