@@ -67,6 +67,10 @@
     background-color: #eee;
 }
 
+.ant-alert.ant-alert-no-icon {
+    width: 200%;
+}
+
 
 @media (max-width: 970px) {
     .movies__list {

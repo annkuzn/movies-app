@@ -8,7 +8,6 @@ import { Provider } from '../../context';
 import MoviesList from '../moviesList/moviesList';
 import SearchInput from '../searchInput/searchInput';
 import MovieApi from '../../services/movie-api';
-import Alert from '../alert/alert';
 
 const { TabPane } = Tabs;
 
@@ -121,7 +120,6 @@ export default class App extends Component {
 
     render () {
         const { tab, genres, error, loading, ratedMovies, searchMovies, currentPage, totalPages } = this.state;
-        const data = tab === 1 ? searchMovies : ratedMovies;
 
         const pagination = (tab === 1 && !loading && !error) ? (
             <Pagination
@@ -145,18 +143,12 @@ export default class App extends Component {
                 </Tabs>
                 {input}
                 {loader}
-                <Alert
-                    tab={tab}
-                    data={data}
-                    error={error}
-                    loading={loading}
-                />
                 <MoviesList
                     tab={tab}
-                    data={data}
                     error={error}
                     loading={loading}
                     ratedMovies={ratedMovies}
+                    searchMovies={searchMovies}
                     pushRatedMovie={this.pushRatedMovie}
                 />
                 {pagination}
